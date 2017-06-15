@@ -1,8 +1,6 @@
 package de.agentlab.ds;
 
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -127,14 +125,14 @@ public class Table<S, T, V> {
         return colKeys;
     }
 
-    public Set<Pair<S, T>> getKeyPairs() {
-        Set<Pair<S, T>> result = new HashSet<Pair<S, T>>();
+    public Set<KeyPair<S, T>> getKeyPairs() {
+        Set<KeyPair<S, T>> result = new HashSet<KeyPair<S, T>>();
         Set<S> rowKeys = this.data.keySet();
         for (S rowKey : rowKeys) {
             Map<T, V> rowData = this.data.get(rowKey);
             Set<T> colKeys = rowData.keySet();
             for (T colKey : colKeys) {
-                result.add(new Pair<S, T>(rowKey, colKey));
+                result.add(new KeyPair<S, T>(rowKey, colKey));
             }
         }
         return result;
@@ -222,6 +220,39 @@ public class Table<S, T, V> {
         public S rowKey;
         public T colKey;
         public V value;
+    }
+
+    public static class KeyPair<S, T> {
+        public S rowKey;
+        public T colKey;
+
+        public KeyPair(S rowKey, T colKey) {
+            this.rowKey = rowKey;
+            this.colKey = colKey;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            KeyPair<?, ?> keyPair = (KeyPair<?, ?>) o;
+
+            if (rowKey != null ? !rowKey.equals(keyPair.rowKey) : keyPair.rowKey != null) return false;
+            return colKey != null ? colKey.equals(keyPair.colKey) : keyPair.colKey == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = rowKey != null ? rowKey.hashCode() : 0;
+            result = 31 * result + (colKey != null ? colKey.hashCode() : 0);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "<" + rowKey + ", " + colKey + ">";
+        }
     }
 
     public interface RowKeyFormatter<S> {
