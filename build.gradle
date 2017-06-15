@@ -1,0 +1,68 @@
+defaultTasks 'local'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'jacoco'
+apply plugin: 'maven'
+
+version = '1.0-SNAPSHOT'
+group = 'de.agentlab'
+
+repositories {
+    mavenCentral()
+    flatDir(dirs: 'lib')
+}
+
+configurations {
+    providedCompile
+}
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+
+test {
+    useTestNG() {
+        suiteXmlBuilder().suite(name: 'ds-testsuite', parallel: 'tests') {
+            test(name: 'tree-tests') {
+                packages {
+                    'package'(name: 'de.agentlab.ds.tree.*')
+                }
+            }
+            test(name: 'table-tests') {
+                packages {
+                    'package'(name: 'de.agentlab.ds.table.*')
+                }
+            }
+        }
+    }
+
+    ext.useDefaultListeners = true
+    ext.workingDirectory = 'build/'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    testCompile(
+            ['org.testng:testng:6.8.8'],
+//    ['com.google.inject:guice:3.0']
+    )
+}
+
+configurations {
+    javancss
+}
+
+dependencies {
+    javancss 'org.codehaus.javancss:javancss:32.53'
+}
+
+task javancss << {
+    mkdir reportsDir
+    ant {
+        taskdef name: 'javancss', classname: 'javancss.JavancssAntTask', classpath: configurations.javancss.asPath
+        javancss(srcdir: 'src/main/java', includes: '**/*.java', abortOnFail: 'false', generateReport: 'true', outputfile: "$reportsDir/javancss-report-main.txt", format: "plain")
+        javancss(srcdir: 'src/test/java', includes: '**/*.java', abortOnFail: 'false', generateReport: 'true', outputfile: "$reportsDir/javancss-report-test.txt", format: "plain")
+    }
+}

@@ -1,0 +1,21 @@
+package de.agentlab.ds.tree;
+
+import de.agentlab.ds.Tree;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+@Test
+public class TestCopy extends BaseTreeTest {
+
+    @Test
+    public void testCopy() {
+        Assert.assertEquals(t.size(), 9);
+
+        Tree<TestItem> copy = t.copy();
+
+        Assert.assertEquals(copy.size(), 9);
+
+        Assert.assertEquals(TreeTestUtils.toFlatString(copy), "0|  0.1|    0.1.0|    0.1.1|1|  1.1|    1.1.0|    1.1.1|2|");
+    }
+}
