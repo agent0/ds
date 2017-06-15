@@ -38,4 +38,20 @@ public class TestKeys extends BaseTableTest {
                 new Table.KeyPair<>("r2", "c2"),
                 new Table.KeyPair<>("r2", "c3"))));
     }
+
+    public void testContainsRowKey() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r1", "c1", "v1");
+
+        t.put("r2", "c1", "v2");
+
+        Assert.assertEquals(t.containsRowKey("r1"), true);
+        Assert.assertEquals(t.containsRowKey("r2"), true);
+
+        t.remove("r1", "c1");
+
+        Assert.assertEquals(t.containsRowKey("r1"), false);
+        Assert.assertEquals(t.containsRowKey("r2"), true);
+    }
 }

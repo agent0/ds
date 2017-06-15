@@ -31,10 +31,25 @@ public class TestRemove extends BaseTableTest {
         t.put("r", "c", "v");
         t.put("r", "c2", "v2");
 
-        Assert.assertEquals(t.size(), 2);
+        t.put("r2", "c", "v");
+
+        Assert.assertEquals(t.size(), 3);
         t.removeRow("r");
-        Assert.assertEquals(t.size(), 0);
+        Assert.assertEquals(t.size(), 1);
         Assert.assertEquals(t.contains("r", "c"), false);
         Assert.assertEquals(t.contains("r", "c2"), false);
+    }
+
+    public void testClear() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r", "c", "v");
+        t.put("r", "c2", "v2");
+
+        t.put("r2", "c", "v");
+
+        Assert.assertEquals(t.size(), 3);
+        t.clear();
+        Assert.assertEquals(t.size(), 0);
     }
 }

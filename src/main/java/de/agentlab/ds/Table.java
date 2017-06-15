@@ -61,7 +61,11 @@ public class Table<S, T, V> {
         if (row == null) {
             return null;
         } else {
-            return row.remove(colKey);
+            V removed = row.remove(colKey);
+            if (row.isEmpty()) {
+                this.data.remove(rowKey);
+            }
+            return removed;
         }
     }
 
