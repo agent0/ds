@@ -15,7 +15,7 @@ public class TestPath extends BaseTreeTest {
     public void testGetPathLeaf() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_0);
         expected.add(i_01);
         expected.add(i_010);
@@ -29,7 +29,7 @@ public class TestPath extends BaseTreeTest {
     public void testGetPathIntermediate() {
         Assert.assertEquals(t.size(), 9);
 
-        ArrayList<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_0);
         expected.add(i_01);
 
@@ -42,7 +42,7 @@ public class TestPath extends BaseTreeTest {
     public void testGetPathRoot() {
         Assert.assertEquals(t.size(), 9);
 
-        ArrayList<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_0);
 
         List<TestItem> l = t.getPath(i_0);
@@ -54,7 +54,7 @@ public class TestPath extends BaseTreeTest {
     public void testGetPathTree() {
         Assert.assertEquals(t.size(), 9);
 
-        ArrayList<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_011);
 
         Tree<TestItem> t2 = t.getPathTree(i_011);

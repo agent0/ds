@@ -16,7 +16,7 @@ public class TestUtils extends BaseTreeTest {
 
         Tree<TestItem> t = Tree.asTree(i_0, i_01, i_11);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_0);
         expected.add(i_01);
         expected.add(i_11);

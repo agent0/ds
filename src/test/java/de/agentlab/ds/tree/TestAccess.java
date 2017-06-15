@@ -40,7 +40,7 @@ public class TestAccess extends BaseTreeTest {
     public void testGetLeafs() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_010);
         expected.add(i_011);
         expected.add(i_110);
@@ -83,7 +83,7 @@ public class TestAccess extends BaseTreeTest {
     public void testGetDescendants() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_01);
         expected.add(i_010);
         expected.add(i_011);
@@ -97,7 +97,7 @@ public class TestAccess extends BaseTreeTest {
     public void testGetSiblings() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_011);
 
         List<TestItem> l = t.getSiblings(i_010);
@@ -109,7 +109,7 @@ public class TestAccess extends BaseTreeTest {
     public void testGetRootSiblings() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_1);
         expected.add(i_2);
 
@@ -122,7 +122,7 @@ public class TestAccess extends BaseTreeTest {
     public void testGetSiblingsIncludingSelf() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_010);
         expected.add(i_011);
 
@@ -135,7 +135,7 @@ public class TestAccess extends BaseTreeTest {
     public void testGetLevel_1() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_01);
         expected.add(i_11);
 
@@ -148,7 +148,7 @@ public class TestAccess extends BaseTreeTest {
     public void testGetLevel_2() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_010);
         expected.add(i_011);
         expected.add(i_110);
@@ -185,11 +185,11 @@ public class TestAccess extends BaseTreeTest {
 
         Assert.assertEquals(branches.size(), 5);
 
-        Assert.assertEquals(branches.get(0), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_0, i_01, i_010})));
-        Assert.assertEquals(branches.get(1), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_0, i_01, i_011})));
-        Assert.assertEquals(branches.get(2), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_1, i_11, i_110})));
-        Assert.assertEquals(branches.get(3), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_1, i_11, i_111})));
-        Assert.assertEquals(branches.get(4), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_2})));
+        Assert.assertEquals(branches.get(0), new ArrayList<>(Arrays.asList(new TestItem[]{i_0, i_01, i_010})));
+        Assert.assertEquals(branches.get(1), new ArrayList<>(Arrays.asList(new TestItem[]{i_0, i_01, i_011})));
+        Assert.assertEquals(branches.get(2), new ArrayList<>(Arrays.asList(new TestItem[]{i_1, i_11, i_110})));
+        Assert.assertEquals(branches.get(3), new ArrayList<>(Arrays.asList(new TestItem[]{i_1, i_11, i_111})));
+        Assert.assertEquals(branches.get(4), new ArrayList<>(Arrays.asList(new TestItem[]{i_2})));
     }
 
     @Test
@@ -198,17 +198,17 @@ public class TestAccess extends BaseTreeTest {
 
         Iterator<List<TestItem>> branchesIterator = t.getBranchesIterator();
 
-        Assert.assertEquals(branchesIterator.next(), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_0, i_01, i_010})));
-        Assert.assertEquals(branchesIterator.next(), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_0, i_01, i_011})));
-        Assert.assertEquals(branchesIterator.next(), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_1, i_11, i_110})));
-        Assert.assertEquals(branchesIterator.next(), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_1, i_11, i_111})));
-        Assert.assertEquals(branchesIterator.next(), new ArrayList<TestItem>(Arrays.asList(new TestItem[]{i_2})));
+        Assert.assertEquals(branchesIterator.next(), new ArrayList<>(Arrays.asList(new TestItem[]{i_0, i_01, i_010})));
+        Assert.assertEquals(branchesIterator.next(), new ArrayList<>(Arrays.asList(new TestItem[]{i_0, i_01, i_011})));
+        Assert.assertEquals(branchesIterator.next(), new ArrayList<>(Arrays.asList(new TestItem[]{i_1, i_11, i_110})));
+        Assert.assertEquals(branchesIterator.next(), new ArrayList<>(Arrays.asList(new TestItem[]{i_1, i_11, i_111})));
+        Assert.assertEquals(branchesIterator.next(), new ArrayList<>(Arrays.asList(new TestItem[]{i_2})));
 
         try {
             branchesIterator.next();
             Assert.fail();
         } catch (IndexOutOfBoundsException e) {
-
+            // intetionally empty
         }
     }
 

@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree.Filter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +13,7 @@ public class TestFind extends BaseTreeTest {
     public void testFind() {
         Assert.assertEquals(t.size(), 9);
 
-        TestItem found = t.find(new Filter<TestItem>() {
-
-            @Override
-            public boolean accept(TestItem data) {
-                return data.getValue().equals("0.1");
-            }
-        });
+        TestItem found = t.find(data -> data.getValue().equals("0.1"));
 
         Assert.assertEquals(found, i_01);
     }
@@ -30,13 +22,7 @@ public class TestFind extends BaseTreeTest {
     public void testNotFound() {
         Assert.assertEquals(t.size(), 9);
 
-        TestItem found = t.find(new Filter<TestItem>() {
-
-            @Override
-            public boolean accept(TestItem data) {
-                return data.getValue().equals("abc");
-            }
-        });
+        TestItem found = t.find(data -> data.getValue().equals("abc"));
 
         Assert.assertNull(found);
     }
@@ -45,15 +31,9 @@ public class TestFind extends BaseTreeTest {
     public void testFindAll() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> found = t.findAll(new Filter<TestItem>() {
+        List<TestItem> found = t.findAll(data -> data.getValue().contains("0.1"));
 
-            @Override
-            public boolean accept(TestItem data) {
-                return data.getValue().contains("0.1");
-            }
-        });
-
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_01);
         expected.add(i_010);
         expected.add(i_011);
@@ -65,13 +45,7 @@ public class TestFind extends BaseTreeTest {
     public void testFindAllNotFound() {
         Assert.assertEquals(t.size(), 9);
 
-        List<TestItem> found = t.findAll(new Filter<TestItem>() {
-
-            @Override
-            public boolean accept(TestItem data) {
-                return data.getValue().contains("abc");
-            }
-        });
+        List<TestItem> found = t.findAll(data -> data.getValue().contains("abc"));
 
         Assert.assertEquals(found.size(), 0);
     }

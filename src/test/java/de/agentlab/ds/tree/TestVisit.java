@@ -15,14 +15,10 @@ public class TestVisit extends BaseTreeTest {
     public void testVisit() {
         Assert.assertEquals(t.size(), 9);
 
-        final List<TestItem> visited = new ArrayList<TestItem>();
-        t.visit(new Tree.Visitor<TestItem>() {
-
-            @Override
-            public boolean visit(TestItem data) {
-                visited.add(data);
-                return true;
-            }
+        final List<TestItem> visited = new ArrayList<>();
+        t.visit(data -> {
+            visited.add(data);
+            return true;
         });
 
         Assert.assertEquals(t.getPreorderList(), visited);
@@ -32,18 +28,10 @@ public class TestVisit extends BaseTreeTest {
     public void testVisitAbort() {
         Assert.assertEquals(t.size(), 9);
 
-        final List<TestItem> visited = new ArrayList<TestItem>();
-        t.visit(new Tree.Visitor<TestItem>() {
-
-            @Override
-            public boolean visit(TestItem data) {
-                visited.add(data);
-                if (data.equals(i_11)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
+        final List<TestItem> visited = new ArrayList<>();
+        t.visit(data -> {
+            visited.add(data);
+            return !data.equals(i_11);
         });
         Assert.assertEquals(t.getPreorderList().subList(0, 6), visited);
     }
@@ -52,17 +40,13 @@ public class TestVisit extends BaseTreeTest {
     public void testVisitFromNode() {
         Assert.assertEquals(t.size(), 9);
 
-        final List<TestItem> visited = new ArrayList<TestItem>();
-        t.visit(i_1, new Tree.Visitor<TestItem>() {
-
-            @Override
-            public boolean visit(TestItem data) {
-                visited.add(data);
-                return true;
-            }
+        final List<TestItem> visited = new ArrayList<>();
+        t.visit(i_1, data -> {
+            visited.add(data);
+            return true;
         });
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_1);
         expected.add(i_11);
         expected.add(i_110);
@@ -75,17 +59,13 @@ public class TestVisit extends BaseTreeTest {
     public void testVisitDescendants() {
         Assert.assertEquals(t.size(), 9);
 
-        final List<TestItem> visited = new ArrayList<TestItem>();
-        t.visitDescendants(i_1, new Tree.Visitor<TestItem>() {
-
-            @Override
-            public boolean visit(TestItem data) {
-                visited.add(data);
-                return true;
-            }
+        final List<TestItem> visited = new ArrayList<>();
+        t.visitDescendants(i_1, data -> {
+            visited.add(data);
+            return true;
         });
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_11);
         expected.add(i_110);
         expected.add(i_111);
@@ -97,16 +77,12 @@ public class TestVisit extends BaseTreeTest {
     public void testVisitSiblings() {
         Assert.assertEquals(t.size(), 9);
 
-        final List<TestItem> visited = new ArrayList<TestItem>();
-        t.visitSiblings(i_110, new Tree.Visitor<TestItem>() {
-
-            @Override
-            public boolean visit(TestItem data) {
-                visited.add(data);
-                return true;
-            }
+        final List<TestItem> visited = new ArrayList<>();
+        t.visitSiblings(i_110, data -> {
+            visited.add(data);
+            return true;
         });
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_111);
 
         Assert.assertEquals(expected, visited);
@@ -116,7 +92,7 @@ public class TestVisit extends BaseTreeTest {
     public void testVisitPrePost() {
         Assert.assertEquals(t.size(), 9);
 
-        final List<TestItem> visited = new ArrayList<TestItem>();
+        final List<TestItem> visited = new ArrayList<>();
         t.visit(new Tree.PrePostVisitor<TestItem>() {
 
             @Override
@@ -131,7 +107,7 @@ public class TestVisit extends BaseTreeTest {
                 return true;
             }
         });
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_0);
         expected.add(i_01);
         expected.add(i_010);

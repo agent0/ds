@@ -76,7 +76,7 @@ public class TestAdd extends BaseTreeTest {
         TestItem i_010a = new TestItem("0.1.0a");
         t.addChildBefore(i_011, i_010a);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_010);
         expected.add(i_010a);
         expected.add(i_011);
@@ -93,7 +93,7 @@ public class TestAdd extends BaseTreeTest {
         TestItem i_010a = new TestItem("0.1.0a");
         t.addChildAfter(i_010, i_010a);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_010);
         expected.add(i_010a);
         expected.add(i_011);
@@ -110,7 +110,7 @@ public class TestAdd extends BaseTreeTest {
         TestItem i_010a = new TestItem("0.1.0a");
         t.addChildAt(t.asList().get(1), 0, i_010a);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_010a);
         expected.add(i_010);
         expected.add(i_011);
@@ -127,7 +127,7 @@ public class TestAdd extends BaseTreeTest {
         TestItem i_010a = new TestItem("0.1.0a");
         t.addChildAt(t.asList().get(1), 2, i_010a);
 
-        List<TestItem> expected = new ArrayList<TestItem>();
+        List<TestItem> expected = new ArrayList<>();
         expected.add(i_010);
         expected.add(i_011);
         expected.add(i_010a);
