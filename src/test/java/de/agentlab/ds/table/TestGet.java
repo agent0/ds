@@ -36,4 +36,14 @@ public class TestGet extends BaseTableTest {
         Assert.assertEquals(rowMap.get("c2"), "v2");
         Assert.assertEquals(rowMap.get("c3"), "v3");
     }
+
+    public void testGetRowMapNotFound() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r", "c1", "v1");
+
+        Map<String, String> colData = t.getRowMap("r1");
+
+        Assert.assertTrue(colData.isEmpty());
+    }
 }

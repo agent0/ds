@@ -25,6 +25,16 @@ public class TestRemove extends BaseTableTest {
         Assert.assertEquals(t.get("r", "c"), null);
     }
 
+    public void testRemoveNotFound() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r", "c", "v");
+        t.put("r", "c2", "v2");
+
+        String removed = t.remove("r1", "c1");
+        Assert.assertNull(removed);
+    }
+
     public void testRemoveRow() {
         Table<String, String, String> t = new Table<>();
 
