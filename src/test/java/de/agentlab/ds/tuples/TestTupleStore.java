@@ -25,7 +25,7 @@ public class TestTupleStore {
 
         System.out.println("--");
 
-        List<String[]> result = ts.find("1", "2");
+        List<List<String>> result = ts.find("1", "2");
         printResult(result);
 
         System.out.println("--");
@@ -40,13 +40,13 @@ public class TestTupleStore {
 
         System.out.println("--");
 
-        Set<String[]> distinct = ts.distinct(null, null, "");
+        Set<List<String>> distinct = ts.distinct(null, null, "");
         System.out.println(distinct);
 
-        Map<String[], Integer> count = ts.count(null, null, "");
+        Map<List<String>, Integer> count = ts.count(null, null, "");
         System.out.println(count);
 
-        Map<String[], List<String[]>> group = ts.group(null, null, "");
+        Map<List<String>, List<List<String>>> group = ts.group(null, null, "");
         group.entrySet().forEach(e -> {
             System.out.println(Arrays.asList(e.getKey()) + "=" + e.getValue().stream().map(a -> Arrays.asList(a)).collect(Collectors.toList()));
         });
@@ -62,7 +62,7 @@ public class TestTupleStore {
         });
     }
 
-    private void printResult(List<String[]> result) {
+    private void printResult(List<List<String>> result) {
         result.forEach(e -> System.out.println(Arrays.asList(e)));
     }
 }

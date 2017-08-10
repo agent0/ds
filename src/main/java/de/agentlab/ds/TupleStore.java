@@ -10,38 +10,38 @@ import java.util.stream.Collectors;
 
 public class TupleStore<T> {
 
-    private List<T[]> data = new ArrayList<>();
+    private List<List<T>> data = new ArrayList<>();
 
     public void put(T... tuple) {
-        this.data.add(tuple);
+        this.data.add(Arrays.asList(tuple));
     }
 
-    public List<T[]> find(T... pattern) {
-        List<T[]> result = new ArrayList<>();
+    public List<List<T>> find(T... pattern) {
+        List<List<T>> result = new ArrayList<>();
 
-        for (T[] entry : this.data) {
-            if (this.matches(entry, pattern)) {
+        for (List<T> entry : this.data) {
+            if (this.matches(entry, Arrays.asList(pattern))) {
                 result.add(entry);
             }
         }
         return result;
     }
 
-    public Set<T[]> distinct(T... pattern) {
+    public Set<List<T>> distinct(T... pattern) {
         return this.count(pattern).keySet();
     }
 
-    public Map<T[], Integer> count(T... pattern) {
-        Map<T[], List<T[]>> group = this.group(pattern);
+    public Map<List<T>, Integer> count(T... pattern) {
+        Map<List<T>, List<List<T>>> group = this.group(pattern);
         return group.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().size()));
     }
 
-    public Map<T[], List<T[]>> group(T... pattern) {
-        Map<List<T>, List<T[]>> result = new HashMap<>();
+    public Map<List<T>, List<List<T>>> group(T... pattern) {
+        Map<List<T>, List<List<T>>> result = new HashMap<>();
 
-        for (T[] entry : this.data) {
-            List<T> key = makeKey(entry, pattern);
-            List<T[]> tmp = result.get(key);
+        for (List<T> entry : this.data) {
+            List<T> key = makeKey(entry, Arrays.asList(pattern));
+            List<List<T>> tmp = result.get(key);
             if (tmp == null) {
                 tmp = new ArrayList<>();
                 result.put(key, tmp);
@@ -49,18 +49,14 @@ public class TupleStore<T> {
             tmp.add(entry);
         }
 
-        Map<T[], List<T[]>> collect = result.entrySet().stream().collect(Collectors.toMap(e -> {
-            T[] a = (T[]) new Object[e.getKey().size()];
-            return e.getKey().toArray(a);
-        }, e -> e.getValue()));
-        return collect;
+        return result;
     }
 
-    private List<T> makeKey(T[] entry, T[] pattern) {
+    private List<T> makeKey(List<T> entry, List<T> pattern) {
         List<T> key = new ArrayList<T>();
-        for (int i = 0; i < pattern.length; i++) {
-            if (pattern[i] != null) {
-                key.add(entry[i]);
+        for (int i = 0; i < pattern.size(); i++) {
+            if (pattern.get(i) != null) {
+                key.add(entry.get(i));
             } else {
                 key.add(null);
             }
@@ -68,10 +64,10 @@ public class TupleStore<T> {
         return key;
     }
 
-    private boolean matches(T[] entry, T[] pattern) {
+    private boolean matches(List<T> entry, List<T> pattern) {
         boolean result = true;
-        for (int i = 0; i < pattern.length; i++) {
-            result &= this.equals(entry[i], pattern[i]);
+        for (int i = 0; i < pattern.size(); i++) {
+            result &= this.equals(entry.get(i), pattern.get(i));
         }
         return result;
     }
