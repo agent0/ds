@@ -28,6 +28,11 @@ public class TestTupleStore {
         List<List<String>> result = ts.find("1", "2");
         printResult(result);
 
+        System.out.println("-- p");
+
+        result = ts.find(null, t -> t.equals("3") || t.equals("5"));
+        printResult(result);
+
         System.out.println("--");
 
         result = ts.find("1", null, "4");

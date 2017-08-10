@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class TupleStore<T> {
@@ -21,6 +22,17 @@ public class TupleStore<T> {
 
         for (List<T> entry : this.data) {
             if (this.matches(entry, Arrays.asList(pattern))) {
+                result.add(entry);
+            }
+        }
+        return result;
+    }
+
+    public List<List<T>> find(Predicate<T>... predicates) {
+        List<List<T>> result = new ArrayList<>();
+
+        for (List<T> entry : this.data) {
+            if (this.matchesPredicates(entry, Arrays.asList(predicates))) {
                 result.add(entry);
             }
         }
@@ -68,6 +80,17 @@ public class TupleStore<T> {
         boolean result = true;
         for (int i = 0; i < pattern.size(); i++) {
             result &= this.equals(entry.get(i), pattern.get(i));
+        }
+        return result;
+    }
+
+    private boolean matchesPredicates(List<T> entry, List<Predicate<T>> predicates) {
+        boolean result = true;
+        for (int i = 0; i < predicates.size(); i++) {
+            Predicate<T> predicate = predicates.get(i);
+            if (predicate != null) {
+                result &= predicate.test(entry.get(i));
+            }
         }
         return result;
     }
