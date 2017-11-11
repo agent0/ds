@@ -1,5 +1,6 @@
 package de.agentlab.ds.table;
 
+import de.agentlab.AssertUtils;
 import de.agentlab.ds.Table;
 
 import java.util.Map;
@@ -18,7 +19,7 @@ public class TestGet extends BaseTableTest {
         t.put("r", "c3", "v3");
 
         Assert.assertEquals(t.size(), 3);
-        Assert.assertEquals(t.getRow("r"), asSet("v1", "v2", "v3"));
+        AssertUtils.assertEqualsNoOrder(t.getRow("r"), asList("v1", "v2", "v3"));
     }
 
     public void testGetRowMap() {
@@ -46,4 +47,17 @@ public class TestGet extends BaseTableTest {
 
         Assert.assertTrue(colData.isEmpty());
     }
+
+    public void testGetCol() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r", "c1", "v1");
+        t.put("r", "c3", "v3");
+
+        t.put("r2", "c1", "v2");
+
+        Assert.assertEquals(t.size(), 3);
+        AssertUtils.assertEqualsNoOrder(t.getCol("c1"), asList("v1", "v2"));
+    }
+
 }

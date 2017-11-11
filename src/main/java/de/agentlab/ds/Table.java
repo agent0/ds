@@ -69,12 +69,12 @@ public class Table<S, T, V> {
         }
     }
 
-    public Set<V> getRow(S rowKey) {
+    public List<V> getRow(S rowKey) {
         Map<T, V> row = this.data.get(rowKey);
         if (row == null) {
-            return new HashSet<>();
+            return new ArrayList<>();
         } else {
-            return new HashSet<>(row.values());
+            return new ArrayList<>(row.values());
         }
     }
 
@@ -85,6 +85,14 @@ public class Table<S, T, V> {
         } else {
             return row;
         }
+    }
+
+    public List<V> getCol(T colKey) {
+        List<V> result = new ArrayList<V>();
+        for (S rowKey : this.getRowKeys()) {
+            result.add(this.get(rowKey, colKey));
+        }
+        return result;
     }
 
     public void moveRow(S fromRowKey, S toRowKey) {

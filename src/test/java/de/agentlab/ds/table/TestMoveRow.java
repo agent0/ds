@@ -1,5 +1,6 @@
 package de.agentlab.ds.table;
 
+import de.agentlab.AssertUtils;
 import de.agentlab.ds.Table;
 
 import org.testng.Assert;
@@ -22,7 +23,7 @@ public class TestMoveRow extends BaseTableTest {
         Assert.assertFalse(t.getRowKeys().contains("r1"));
         Assert.assertTrue(t.getRowKeys().contains("r3"));
 
-        Assert.assertEquals(t.getRow("r3"), asSet("v1", "v2", "v3"));
+        AssertUtils.assertEqualsNoOrder(t.getRow("r3"), asList("v1", "v2", "v3"));
     }
 
 }
