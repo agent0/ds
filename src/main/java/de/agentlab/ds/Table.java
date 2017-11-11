@@ -30,6 +30,13 @@ public class Table<S, T, V> {
         }
     }
 
+    public Table(Map<S, Map<T, V>> data) {
+        for (Entry<S, Map<T, V>> e : data.entrySet()) {
+            Map<T, V> v = data.get(e.getKey());
+            this.data.put(e.getKey(), new HashMap<T, V>(v));
+        }
+    }
+
     public void put(S rowKey, T colKey, V value) {
         Map<T, V> row = this.data.get(rowKey);
         if (row == null) {
@@ -157,10 +164,7 @@ public class Table<S, T, V> {
             Map<T, V> rowData = this.data.get(rowKey);
             Set<T> colKeys = rowData.keySet();
             for (T colKey : colKeys) {
-                TableEntry<S, T, V> entry = new TableEntry<S, T, V>();
-                entry.rowKey = rowKey;
-                entry.colKey = colKey;
-                entry.value = rowData.get(colKey);
+                TableEntry<S, T, V> entry = new TableEntry<S, T, V>(rowKey, colKey, rowData.get(colKey));
                 result.add(entry);
             }
         }
@@ -229,18 +233,44 @@ public class Table<S, T, V> {
     }
 
     public static class TableEntry<S, T, V> {
-        public S rowKey;
-        public T colKey;
-        public V value;
+        private S rowKey;
+        private T colKey;
+        private V value;
+
+        public TableEntry(S rowKey, T colKey, V value) {
+            this.rowKey = rowKey;
+            this.colKey = colKey;
+            this.value = value;
+        }
+
+        public S getRowKey() {
+            return rowKey;
+        }
+
+        public T getColKey() {
+            return colKey;
+        }
+
+        public V getValue() {
+            return value;
+        }
     }
 
     public static class KeyPair<S, T> {
-        public S rowKey;
-        public T colKey;
+        private S rowKey;
+        private T colKey;
 
         public KeyPair(S rowKey, T colKey) {
             this.rowKey = rowKey;
             this.colKey = colKey;
+        }
+
+        public S getRowKey() {
+            return rowKey;
+        }
+
+        public T getColKey() {
+            return colKey;
         }
 
         @Override
