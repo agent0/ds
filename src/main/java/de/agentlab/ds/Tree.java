@@ -73,12 +73,12 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Adds the given element as child of the parent element. The new element is appended to the current list of
+     * Adds the a new element as child of the parent element. The new element is appended to the current list of
      * children of the parent node.
      *
      * @param parent the parent element
      * @param data   the element to add
-     * @return the added element
+     * @return the newly added element
      * @throws IllegalArgumentException if the element has already been added to the tree
      * @throws IllegalArgumentException if the parent element is not found in the tree
      */
@@ -95,6 +95,30 @@ public class Tree<T> implements Serializable {
         Node<T> newNode = new Node<>(parentNode, data);
         parentNode.add(newNode);
         this._put(data, newNode);
+
+        return data;
+    }
+
+    /**
+     * Adds a new element as parent of the given element. The new parent element is moved between the data
+     * element and its current parent element. If the data element is a root node, the new parent is added
+     * as root node.
+     *
+     * @param data      the data element
+     * @param newParent the new parent
+     * @return the newly added element
+     */
+    public T addParent(T data, T newParent) {
+        if (this.nodes.containsKey(newParent)) {
+            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
+        }
+        T currentParent = this.getParent(data);
+        if (currentParent == null) {
+            this.add(newParent);
+        } else {
+            this.addChild(currentParent, newParent);
+        }
+        this.move(data, newParent);
 
         return data;
     }

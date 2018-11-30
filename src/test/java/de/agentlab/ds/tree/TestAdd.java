@@ -38,6 +38,28 @@ public class TestAdd extends BaseTreeTest {
     }
 
     @Test
+    public void testAddParent() {
+        Assert.assertEquals(t.size(), 9);
+
+        TestItem newParent = new TestItem("1.1-p");
+        t.addParent(i_11, newParent);
+
+        Assert.assertEquals(TreeTestUtils.toFlatString(t),
+                "0|  0.1|    0.1.0|    0.1.1|1|  1.1-p|    1.1|      1.1.0|      1.1.1|2|");
+    }
+
+    @Test
+    public void testAddParentToRootNode() {
+        Assert.assertEquals(t.size(), 9);
+
+        TestItem newParent = new TestItem("1-p");
+        t.addParent(i_1, newParent);
+
+        Assert.assertEquals(TreeTestUtils.toFlatString(t),
+                "0|  0.1|    0.1.0|    0.1.1|2|1-p|  1|    1.1|      1.1.0|      1.1.1|");
+    }
+
+    @Test
     public void testAddSubree() {
         Assert.assertEquals(t.size(), 9);
         Assert.assertEquals(t2.size(), 7);
