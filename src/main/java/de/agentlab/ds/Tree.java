@@ -31,8 +31,8 @@ public class Tree<T> implements Serializable {
 
     private long version = 0;
 
-    private Node<T> root = new Node<T>();
-    private Map<T, Node<T>> nodes = new HashMap<T, Node<T>>();
+    private Node<T> root = new Node<>();
+    private Map<T, Node<T>> nodes = new HashMap<>();
 
     /**
      * Adds the given element to the tree. The element is added as the last root node.
@@ -46,7 +46,7 @@ public class Tree<T> implements Serializable {
             throw new IllegalArgumentException("Element '" + data + "' already in tree.");
         }
 
-        Node<T> newNode = new Node<T>(this.root, data);
+        Node<T> newNode = new Node<>(this.root, data);
         this.root.add(newNode);
         this._put(data, newNode);
 
@@ -65,7 +65,7 @@ public class Tree<T> implements Serializable {
             throw new IllegalArgumentException("Element '" + data + "' already in tree.");
         }
 
-        Node<T> newNode = new Node<T>(this.root, data);
+        Node<T> newNode = new Node<>(this.root, data);
         this.root.push(newNode);
         this._put(data, newNode);
 
@@ -92,7 +92,7 @@ public class Tree<T> implements Serializable {
             throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
         }
 
-        Node<T> newNode = new Node<T>(parentNode, data);
+        Node<T> newNode = new Node<>(parentNode, data);
         parentNode.add(newNode);
         this._put(data, newNode);
 
@@ -150,7 +150,7 @@ public class Tree<T> implements Serializable {
             throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
         }
 
-        Node<T> newNode = new Node<T>(parentNode, data);
+        Node<T> newNode = new Node<>(parentNode, data);
         parentNode.add(index, newNode);
         this._put(data, newNode);
 
@@ -178,7 +178,7 @@ public class Tree<T> implements Serializable {
 
         List<Node<T>> children = siblingNode.getParent().getChildren();
         int index = children.indexOf(siblingNode);
-        Node<T> newChild = new Node<T>(siblingNode.getParent(), data);
+        Node<T> newChild = new Node<>(siblingNode.getParent(), data);
         children.add(index, newChild);
         this._put(data, newChild);
 
@@ -206,7 +206,7 @@ public class Tree<T> implements Serializable {
 
         List<Node<T>> children = siblingNode.getParent().getChildren();
         int index = children.indexOf(siblingNode);
-        Node<T> newChild = new Node<T>(siblingNode.getParent(), data);
+        Node<T> newChild = new Node<>(siblingNode.getParent(), data);
         children.add(index + 1, newChild);
         this._put(data, newChild);
 
@@ -323,15 +323,7 @@ public class Tree<T> implements Serializable {
         final List<T> path = this.getPath(data);
         final List<T> descendants = this.getDescendants(data);
 
-        this.filterEager(new Filter<T>() {
-            @Override
-            public boolean accept(T data) {
-                if (path.contains(data) || descendants.contains(data)) {
-                    return true;
-                }
-                return false;
-            }
-        });
+        this.filterEager(data1 -> path.contains(data1) || descendants.contains(data1));
     }
 
     /**
@@ -346,15 +338,7 @@ public class Tree<T> implements Serializable {
         final List<T> path = result.getPath(data);
         final List<T> descendants = result.getDescendants(data);
 
-        result.filterEager(new Filter<T>() {
-            @Override
-            public boolean accept(T data) {
-                if (path.contains(data) || descendants.contains(data)) {
-                    return true;
-                }
-                return false;
-            }
-        });
+        result.filterEager(data1 -> path.contains(data1) || descendants.contains(data1));
 
         return result;
     }
@@ -401,11 +385,7 @@ public class Tree<T> implements Serializable {
      */
     public boolean remove(Filter<T> f) {
         List<T> toRemove = this.getPreorderList();
-        for (Iterator<T> i = toRemove.iterator(); i.hasNext(); ) {
-            if (!f.accept(i.next())) {
-                i.remove();
-            }
-        }
+        toRemove.removeIf(t -> !f.accept(t));
 
         boolean result = false;
         for (T t : toRemove) {
@@ -440,7 +420,7 @@ public class Tree<T> implements Serializable {
      * @return the root elements
      */
     public List<T> getRoots() {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (Node<T> node : this.root.getChildren()) {
             result.add(node.getData());
         }
@@ -462,7 +442,7 @@ public class Tree<T> implements Serializable {
      * @return the leaf elements
      */
     public List<T> getLeafs() {
-        final List<T> result = new ArrayList<T>();
+        final List<T> result = new ArrayList<>();
 
         for (T t : this.getPreorderList()) {
             if (!this.hasChildren(t)) {
@@ -485,7 +465,7 @@ public class Tree<T> implements Serializable {
         if (parentNode == null) {
             throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
         }
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (Node<T> node : parentNode.getChildren()) {
             result.add(node.getData());
         }
@@ -503,7 +483,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Tests if the given element has chidlren.
+     * Tests if the given element has children.
      *
      * @param parent the element to test
      * @return <code>true</code> if the given node has children, <code>false</code> otherwise
@@ -540,7 +520,7 @@ public class Tree<T> implements Serializable {
         if (dataNode == null) {
             throw new IllegalArgumentException("Element '" + data + "' not found.");
         }
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (Node<T> node : dataNode.getParent().getChildren()) {
             if (includeSelf || !data.equals(node.getData())) {
                 result.add(node.getData());
@@ -556,13 +536,7 @@ public class Tree<T> implements Serializable {
      * @return the subtree
      */
     public Tree<T> getSubtree(T data) {
-        Tree<T> result = this.map(data, new Mapper<T, T>() {
-            @Override
-            public T map(T data) {
-                return data;
-            }
-        });
-        return result;
+        return this.map(data, data1 -> data1);
     }
 
     /**
@@ -585,11 +559,7 @@ public class Tree<T> implements Serializable {
             children = this.getChildren(parent);
         }
 
-        if (children.indexOf(data) == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return children.indexOf(data) == 0;
     }
 
     /**
@@ -612,11 +582,7 @@ public class Tree<T> implements Serializable {
             children = this.getChildren(parent);
         }
 
-        if (children.indexOf(data) == children.size() - 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return children.indexOf(data) == children.size() - 1;
     }
 
     /**
@@ -665,7 +631,7 @@ public class Tree<T> implements Serializable {
             throw new IllegalArgumentException("Element '" + data + "' not found.");
         }
 
-        List<T> path = new ArrayList<T>();
+        List<T> path = new ArrayList<>();
         while (node.getParent() != null) {
             path.add(node.getData());
             node = node.getParent();
@@ -684,7 +650,7 @@ public class Tree<T> implements Serializable {
      * @throws IllegalArgumentException if the element is not found in the tree
      */
     public Tree<T> getPathTree(T data) {
-        Tree<T> result = new Tree<T>();
+        Tree<T> result = new Tree<>();
 
         List<T> path = this.getPath(data);
         if (path.size() > 0) {
@@ -765,7 +731,7 @@ public class Tree<T> implements Serializable {
     /**
      * Visits the siblings of an element a pre-order. The element itself is not processed by the {@link Visitor}.
      *
-     * @param data    the element whichs siblings to visit
+     * @param data    the element which siblings to visit
      * @param visitor the {@link Visitor} to apply
      */
     public void visitSiblings(T data, Visitor<T> visitor) {
@@ -795,44 +761,29 @@ public class Tree<T> implements Serializable {
      * @return <code>true</code> if the element is a child element, <code>false</code> otherwise
      */
     public boolean isChild(T data, T data2) {
-        List<T> tmp = getChildren(data2);
-        if (tmp.contains(data)) {
-            return true;
-        } else {
-            return false;
-        }
+        return getChildren(data2).contains(data);
     }
 
     /**
      * Checks if an element is a descendant of another element.
      *
      * @param data  the element to test
-     * @param data2 the predescessor to check against
+     * @param data2 the predecessor to check against
      * @return <code>true</code> if the element is a descendant, <code>false</code> otherwise
      */
     public boolean isDescendant(T data, T data2) {
-        List<T> tmp = getPreorderList(data2);
-        if (tmp.contains(data)) {
-            return true;
-        } else {
-            return false;
-        }
+        return getPreorderList(data2).contains(data);
     }
 
     /**
      * Checks if an element is an ancestor of another element.
      *
      * @param data  the ancestor to check against
-     * @param data2 the iten to check
+     * @param data2 the item to check
      * @return <code>true</code> if the element is an ancestor, <code>false</code> otherwise
      */
     public boolean isAncestor(T data, T data2) {
-        List<T> tmp = getPreorderList(data);
-        if (tmp.contains(data2)) {
-            return true;
-        } else {
-            return false;
-        }
+        return getPreorderList(data).contains(data);
     }
 
     /**
@@ -859,7 +810,7 @@ public class Tree<T> implements Serializable {
      * @return the element list in pre-order
      */
     public List<T> getPreorderList() {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         this._preorder(this.root, result);
 
         return result.subList(1, result.size());
@@ -872,7 +823,7 @@ public class Tree<T> implements Serializable {
      * @return the elements of the tree accepted by the given filter as pre-ordered list
      */
     public List<T> getPreorderList(Filter<T> filter) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         this._preorder(this.root, filter, result, true);
         return result;
     }
@@ -889,7 +840,7 @@ public class Tree<T> implements Serializable {
         if (node == null) {
             throw new IllegalArgumentException("Element '" + data + "' not found.");
         }
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         this._preorder(node, result);
         return result.subList(1, result.size());
     }
@@ -901,7 +852,7 @@ public class Tree<T> implements Serializable {
      * @return the elements of the tree accepted by the given filter as set
      */
     public Set<T> getMatchSet(Filter<T> filter) {
-        Set<T> result = new HashSet<T>();
+        Set<T> result = new HashSet<>();
         this._preorder(this.root, filter, result, true);
         return result;
     }
@@ -912,7 +863,7 @@ public class Tree<T> implements Serializable {
      * @return the element list
      */
     public List<T> getBreadthFirstList() {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         this._breadthfirst(this.root, result);
         return result;
     }
@@ -923,7 +874,7 @@ public class Tree<T> implements Serializable {
      * @return a list of all branches
      */
     public List<List<T>> getBranches() {
-        List<List<T>> result = new ArrayList<List<T>>();
+        List<List<T>> result = new ArrayList<>();
 
         List<T> leafs = this.getLeafs();
         for (T t : leafs) {
@@ -969,7 +920,7 @@ public class Tree<T> implements Serializable {
      * @return a list of all nodes on the given level
      */
     public List<T> getLevel(int level) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
 
         List<T> l = this.getPreorderList();
         for (T t : l) {
@@ -994,15 +945,6 @@ public class Tree<T> implements Serializable {
     /**
      * Retains all elements from the tree that are accepted by the {@link Filter}. If an element is retained, all
      * elements on the path to a root element are retained as well. The elements that are rejected are removed using the
-     * {@link remove(T)} method.
-     *
-     * @param filter the {@link Filter} to use
-     *
-     * @return the filtered tree
-     */
-    /**
-     * Retains all elements from the tree that are accepted by the {@link Filter}. If an element is retained, all
-     * elements on the path to a root element are retained as well. The elements that are rejected are removed using the
      * {@link #remove(T)} method.
      *
      * @param filter the {@link Filter} to use
@@ -1020,13 +962,13 @@ public class Tree<T> implements Serializable {
      * @return the filtered tree
      */
     public Tree<T> filter(Filter<T> filter, boolean retainSubTree) {
-        List<T> matches = new ArrayList<T>();
+        List<T> matches = new ArrayList<>();
         for (T data : this.getPreorderList()) {
             if (filter.accept(data)) {
                 matches.add(data);
             }
         }
-        Set<T> keep = new HashSet<T>();
+        Set<T> keep = new HashSet<>();
 
         for (T data : matches) {
             List<T> path = this.getPath(data);
@@ -1100,7 +1042,7 @@ public class Tree<T> implements Serializable {
      * @param filter the {@link Filter} to use
      */
     public void shrink(Filter<T> filter) {
-        List<T> matches = new ArrayList<T>();
+        List<T> matches = new ArrayList<>();
         for (T data : this.getPreorderList()) {
             if (filter.accept(data)) {
                 matches.add(data);
@@ -1122,7 +1064,7 @@ public class Tree<T> implements Serializable {
      * @param filter the {@link Filter} to use
      */
     public void shrinkSubtree(T data, Filter<T> filter) {
-        List<T> matches = new ArrayList<T>();
+        List<T> matches = new ArrayList<>();
         for (T data2 : this.getPreorderList(data)) {
             if (filter.accept(data2)) {
                 matches.add(data2);
@@ -1139,7 +1081,7 @@ public class Tree<T> implements Serializable {
     /**
      * Removes all but the first <code>count</code> elements of the tree
      *
-     * @param count the number of elemenst (in pre-order) to keep
+     * @param count the number of elements (in pre-order) to keep
      */
     public void limit(int count) {
         List<T> l = this.getPreorderList();
@@ -1149,9 +1091,9 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Returns a copy of this tree that results from applying the {@link #filter(Filter)} method.
+     * Returns a copy of this tree that results from applying the {@link #filter(Filter)} method after the copy is made.
      *
-     * @param filter
+     * @param filter the {@link Filter} to use
      * @return the tree copy
      */
     public Tree<T> copy(Filter<T> filter) {
@@ -1167,7 +1109,7 @@ public class Tree<T> implements Serializable {
      * @return a homomorphous tree of type <code>S</code>
      */
     public <S> Tree<S> map(Mapper<T, S> mapper) {
-        Tree<S> result = new Tree<S>();
+        Tree<S> result = new Tree<>();
 
         this._map(this.root, mapper, result.root, result);
 
@@ -1189,7 +1131,7 @@ public class Tree<T> implements Serializable {
             throw new IllegalArgumentException("Element '" + data + "' not found.");
         }
 
-        Tree<S> result = new Tree<S>();
+        Tree<S> result = new Tree<>();
         Node<S> resultRoot = result._add(mapper.map(data));
 
         this._map(node, mapper, resultRoot, result);
@@ -1220,7 +1162,7 @@ public class Tree<T> implements Serializable {
      * @return the list of elements that is accepted by the {@link Filter} or an empty list if none is accepted
      */
     public List<T> findAll(Filter<T> filter) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         List<T> l = this.getPreorderList();
         for (T t : l) {
             if (filter.accept(t)) {
@@ -1254,7 +1196,7 @@ public class Tree<T> implements Serializable {
      * Returns the index of the first occurrence of the specified element in this tree, or -1 if this list does not
      * contain the element.
      *
-     * @param data the
+     * @param data the to look for
      * @return the index of the first occurrence of the specified element in this tree, or -1 if this list does not
      * contain the element
      */
@@ -1268,22 +1210,21 @@ public class Tree<T> implements Serializable {
      * @return a copy of the tree
      */
     public Tree<T> copy() {
-        Tree<T> copy = this.map(new Tree.IdentityMapper<T>());
-        return copy;
+        return this.map(new IdentityMapper<>());
     }
 
     public Tree<ItemWrapper<T>> reverse() {
-        Tree<ItemWrapper<T>> result = new Tree<Tree.ItemWrapper<T>>();
+        Tree<ItemWrapper<T>> result = new Tree<>();
 
         List<T> leafs = this.getLeafs();
         for (T leaf : leafs) {
-            ItemWrapper<T> data = new ItemWrapper<T>(leaf);
+            ItemWrapper<T> data = new ItemWrapper<>(leaf);
             result.add(data);
 
             ItemWrapper<T> current = data;
             List<T> path = this.getPath(leaf);
             for (int i = path.size() - 2; i >= 0; i--) {
-                ItemWrapper<T> tmp = new ItemWrapper<T>(path.get(i));
+                ItemWrapper<T> tmp = new ItemWrapper<>(path.get(i));
                 result.addChild(current, tmp);
                 current = tmp;
 
@@ -1293,7 +1234,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * @param data
+     * @param data the element to check
      * @return <code>true</code> if the item is a root node, <code>false</code> otherwise
      */
     public boolean isRoot(T data) {
@@ -1301,7 +1242,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * @param data
+     * @param data the element to check
      * @return <code>true</code> if the item is a leaf node, <code>false</code> otherwise
      */
     public boolean isLeaf(T data) {
@@ -1316,13 +1257,7 @@ public class Tree<T> implements Serializable {
     @Override
     public String toString() {
         String result = "";
-        result += this.root.toString(-1, new ElementFormatter<T>() {
-
-            @Override
-            public String format(T data) {
-                return data.toString();
-            }
-        });
+        result += this.root.toString(-1, data -> data.toString());
         return result;
     }
 
@@ -1365,15 +1300,14 @@ public class Tree<T> implements Serializable {
         if (!visitor.visitPre(node.getData())) {
             return false;
         }
+
         for (Node<T> child : node.getChildren()) {
             if (!this._visit(child, visitor)) {
                 return false;
             }
         }
-        if (!visitor.visitPost(node.getData())) {
-            return false;
-        }
-        return true;
+
+        return visitor.visitPost(node.getData());
     }
 
     private void _preorder(Node<T> node, List<T> result) {
@@ -1395,7 +1329,7 @@ public class Tree<T> implements Serializable {
     }
 
     private void _breadthfirst(Node<T> root, List<T> result) {
-        LinkedList<Node<T>> queue = new LinkedList<Node<T>>();
+        LinkedList<Node<T>> queue = new LinkedList<>();
         queue.add(root);
 
         while (queue.size() > 0) {
@@ -1410,13 +1344,7 @@ public class Tree<T> implements Serializable {
     private void _sort(Node<T> parent, final Comparator<? super T> comparator) {
         List<Node<T>> children = parent.getChildren();
 
-        Collections.sort(children, new Comparator<Node<T>>() {
-
-            @Override
-            public int compare(Node<T> n1, Node<T> n2) {
-                return comparator.compare(n1.getData(), n2.getData());
-            }
-        });
+        Collections.sort(children, (n1, n2) -> comparator.compare(n1.getData(), n2.getData()));
         for (Node<T> child : children) {
             this._sort(child, comparator);
         }
@@ -1427,7 +1355,7 @@ public class Tree<T> implements Serializable {
             throw new IllegalArgumentException("Element '" + data + "' already in tree.");
         }
 
-        Node<T> newNode = new Node<T>(this.root, data);
+        Node<T> newNode = new Node<>(this.root, data);
         this.root.add(newNode);
         this._put(data, newNode);
 
@@ -1444,7 +1372,7 @@ public class Tree<T> implements Serializable {
             throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
         }
 
-        Node<T> newNode = new Node<T>(parentNode, data);
+        Node<T> newNode = new Node<>(parentNode, data);
         parentNode.add(newNode);
         this._put(data, newNode);
 
@@ -1473,7 +1401,7 @@ public class Tree<T> implements Serializable {
      * @return a tree with all elements in the list
      */
     public static <T> Tree<T> asTree(T... l) {
-        Tree<T> result = new Tree<T>();
+        Tree<T> result = new Tree<>();
         for (T t : l) {
             result.add(t);
         }
@@ -1488,7 +1416,7 @@ public class Tree<T> implements Serializable {
      * @return a tree with all elements in the list
      */
     public static <T> Tree<T> asDegeneratedTree(T... l) {
-        Tree<T> result = new Tree<T>();
+        Tree<T> result = new Tree<>();
         T parent = null;
         for (T t : l) {
             if (parent == null) {
@@ -1501,33 +1429,33 @@ public class Tree<T> implements Serializable {
         return result;
     }
 
-    public static interface Visitor<T> {
+    public interface Visitor<T> {
 
         boolean visit(T data);
     }
 
-    public static interface PrePostVisitor<T> {
+    public interface PrePostVisitor<T> {
 
         boolean visitPre(T data);
 
         boolean visitPost(T data);
     }
 
-    public static interface Filter<T> {
+    public interface Filter<T> {
         boolean accept(T data);
     }
 
-    public static interface RetainingFilter<T> extends Filter<T> {
+    public interface RetainingFilter<T> extends Filter<T> {
 
         boolean retain(T data);
     }
 
-    public static interface Mapper<T, S> {
+    public interface Mapper<T, S> {
 
         S map(T data);
     }
 
-    public static interface ElementFormatter<T> {
+    public interface ElementFormatter<T> {
 
         String format(T data);
     }
@@ -1564,7 +1492,7 @@ public class Tree<T> implements Serializable {
 
         private Node<T> parent;
         private T data;
-        private final List<Node<T>> children = new ArrayList<Node<T>>();
+        private final List<Node<T>> children = new ArrayList<>();
 
         public Node() {
         }
@@ -1627,7 +1555,7 @@ public class Tree<T> implements Serializable {
         }
 
         private String indent(int depth) {
-            StringBuffer b = new StringBuffer();
+            StringBuilder b = new StringBuilder();
             for (int i = 0; i < depth; i++) {
                 b.append(" ");
             }
