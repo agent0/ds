@@ -2,6 +2,7 @@ package de.agentlab.ds;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -393,7 +394,7 @@ public class Tree<T> implements Serializable {
 
     /**
      * Removes all elements that are accepted by the given filter. The elements that are accepted are removed using the
-     * {@link remove(T)} method.
+     * {@link #remove(T)} method.
      *
      * @param f the {@link Filter} to apply
      * @return <code>true</code> if at least one element has been removed, <code>false</code> otherwise
@@ -1002,7 +1003,7 @@ public class Tree<T> implements Serializable {
     /**
      * Retains all elements from the tree that are accepted by the {@link Filter}. If an element is retained, all
      * elements on the path to a root element are retained as well. The elements that are rejected are removed using the
-     * {@link remove(T)} method.
+     * {@link #remove(T)} method.
      *
      * @param filter the {@link Filter} to use
      * @return the filtered tree
@@ -1056,7 +1057,7 @@ public class Tree<T> implements Serializable {
 
     /**
      * Retains all elements from the tree that are accepted by the {@link Filter}. If an element is rejected, all
-     * children are rejected as well. The elements that are rejected are removed using the {@link remove(T)} method.
+     * children are rejected as well. The elements that are rejected are removed using the {@link #remove(T)} method.
      *
      * @param filter the {@link Filter} to use
      * @return the tree
@@ -1382,18 +1383,7 @@ public class Tree<T> implements Serializable {
         }
     }
 
-    private void _preorder(Node<T> node, Filter<T> filter, List<T> result, boolean isRoot) {
-        if (isRoot || filter.accept(node.getData())) {
-            if (!isRoot) {
-                result.add(node.getData());
-            }
-            for (Node<T> child : node.getChildren()) {
-                this._preorder(child, filter, result, false);
-            }
-        }
-    }
-
-    private void _preorder(Node<T> node, Filter<T> filter, Set<T> result, boolean isRoot) {
+    private void _preorder(Node<T> node, Filter<T> filter, Collection<T> result, boolean isRoot) {
         if (isRoot || filter.accept(node.getData())) {
             if (!isRoot) {
                 result.add(node.getData());
@@ -1432,7 +1422,7 @@ public class Tree<T> implements Serializable {
         }
     }
 
-    public Node<T> _add(T data) {
+    private Node<T> _add(T data) {
         if (this.nodes.containsKey(data)) {
             throw new IllegalArgumentException("Element '" + data + "' already in tree.");
         }
