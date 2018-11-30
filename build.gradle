@@ -50,6 +50,15 @@ dependencies {
     )
 }
 
+jar {
+    from('.') {
+        include 'license.txt'
+    }
+    from('src/main/java') {
+        include '**'
+        into 'src'
+    }
+}
 configurations {
     javancss
 }
