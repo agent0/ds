@@ -1,4 +1,6 @@
-package de.agentlab.ds;
+package de.agentlab.ds.tree;
+
+import de.agentlab.ds.common.Counter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,6 +37,42 @@ public class Tree<T> implements Serializable {
     private Map<T, Node<T>> nodes = new HashMap<>();
 
     /**
+     * Helper method to build a tree from the given list of elements. The elements are added as root elements of the
+     * tree.
+     *
+     * @param l the list of elements
+     * @return a tree with all elements in the list
+     */
+    public static <T> Tree<T> asTree(T... l) {
+        Tree<T> result = new Tree<>();
+        for (T t : l) {
+            result.add(t);
+        }
+        return result;
+    }
+
+    /**
+     * Helper method to build a degenerated (i.e. a tree with only a single path) tree from the given list of elements.
+     * The first element becomes the root node, all subsequent elements are added below their respective predecessors. *
+     *
+     * @param l the list of elements
+     * @return a tree with all elements in the list
+     */
+    public static <T> Tree<T> asDegeneratedTree(T... l) {
+        Tree<T> result = new Tree<>();
+        T parent = null;
+        for (T t : l) {
+            if (parent == null) {
+                result.add(t);
+            } else {
+                result.addChild(parent, t);
+            }
+            parent = t;
+        }
+        return result;
+    }
+
+    /**
      * Adds the given element to the tree. The element is added as the last root node.
      *
      * @param data the element to add
@@ -42,32 +80,13 @@ public class Tree<T> implements Serializable {
      * @throws IllegalArgumentException if the element has already been added to the tree
      */
     public T add(T data) {
-        if (this.nodes.containsKey(data)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
+        this.assertNotInTree(data);
 
         Node<T> newNode = new Node<>(this.root, data);
         this.root.add(newNode);
+
         this._put(data, newNode);
-
-        return data;
-    }
-
-    /**
-     * Adds the given element to the tree. The element is added as the first root node.
-     *
-     * @param data the element to add
-     * @return the added element
-     * @throws IllegalArgumentException if the element has already been added to the tree
-     */
-    public T push(T data) {
-        if (this.nodes.containsKey(data)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
-
-        Node<T> newNode = new Node<>(this.root, data);
-        this.root.push(newNode);
-        this._put(data, newNode);
+        this.incVersion();
 
         return data;
     }
@@ -83,18 +102,35 @@ public class Tree<T> implements Serializable {
      * @throws IllegalArgumentException if the parent element is not found in the tree
      */
     public T addChild(T parent, T data) {
-        if (this.nodes.containsKey(data)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
+        this.assertNotInTree(data);
+        this.assertInTree(parent);
 
         Node<T> parentNode = this.nodes.get(parent);
-        if (parentNode == null) {
-            throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
-        }
 
         Node<T> newNode = new Node<>(parentNode, data);
         parentNode.add(newNode);
+
         this._put(data, newNode);
+        this.incVersion();
+
+        return data;
+    }
+
+    /**
+     * Adds the given element to the tree. The element is added as the first root node.
+     *
+     * @param data the element to add
+     * @return the added element
+     * @throws IllegalArgumentException if the element has already been added to the tree
+     */
+    public T push(T data) {
+        this.assertNotInTree(data);
+
+        Node<T> newNode = new Node<>(this.root, data);
+        this.root.push(newNode);
+
+        this._put(data, newNode);
+        this.incVersion();
 
         return data;
     }
@@ -165,18 +201,16 @@ public class Tree<T> implements Serializable {
      * @throws IndexOutOfBoundsException if the position is not valid
      */
     public T addChildAt(T parent, int index, T data) {
-        if (this.nodes.containsKey(data)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
+        this.assertNotInTree(data);
+        this.assertInTree(parent);
 
         Node<T> parentNode = this.nodes.get(parent);
-        if (parentNode == null) {
-            throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
-        }
 
         Node<T> newNode = new Node<>(parentNode, data);
         parentNode.add(index, newNode);
+
         this._put(data, newNode);
+        this.incVersion();
 
         return data;
     }
@@ -191,9 +225,7 @@ public class Tree<T> implements Serializable {
      * @throws IllegalArgumentException if the sibling element is not found in the tree
      */
     public T addChildBefore(T sibling, T data) {
-        if (this.nodes.containsKey(data)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
+        this.assertNotInTree(data);
 
         Node<T> siblingNode = this.nodes.get(sibling);
         if (siblingNode == null) {
@@ -204,7 +236,9 @@ public class Tree<T> implements Serializable {
         int index = children.indexOf(siblingNode);
         Node<T> newChild = new Node<>(siblingNode.getParent(), data);
         children.add(index, newChild);
+
         this._put(data, newChild);
+        this.incVersion();
 
         return data;
     }
@@ -219,9 +253,7 @@ public class Tree<T> implements Serializable {
      * @throws IllegalArgumentException if the sibling element is not found in the tree
      */
     public T addChildAfter(T sibling, T data) {
-        if (this.nodes.containsKey(data)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
+        this.assertNotInTree(data);
 
         Node<T> siblingNode = this.nodes.get(sibling);
         if (siblingNode == null) {
@@ -232,7 +264,9 @@ public class Tree<T> implements Serializable {
         int index = children.indexOf(siblingNode);
         Node<T> newChild = new Node<>(siblingNode.getParent(), data);
         children.add(index + 1, newChild);
+
         this._put(data, newChild);
+        this.incVersion();
 
         return data;
     }
@@ -247,10 +281,9 @@ public class Tree<T> implements Serializable {
      * @throws IllegalArgumentException if the parent is not found in the tree
      */
     public void move(T data, T newParent) {
+        this.assertInTree(data);
+
         Node<T> node = this.nodes.get(data);
-        if (node == null) {
-            throw new IllegalArgumentException("Element '" + data + "' not found.");
-        }
 
         Node<T> parentNode = this.nodes.get(newParent);
 
@@ -310,7 +343,9 @@ public class Tree<T> implements Serializable {
         }
 
         node.getParent().remove(node);
+
         this._remove(data);
+        this.incVersion();
 
         return true;
     }
@@ -322,18 +357,18 @@ public class Tree<T> implements Serializable {
      * @param replacement the replacement
      */
     public void replace(T data, T replacement) {
-        if (this.nodes.containsKey(replacement)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
+        this.assertNotInTree(replacement);
+        this.assertInTree(data);
 
         Node<T> dataNode = this.nodes.get(data);
-        if (dataNode == null) {
-            throw new IllegalArgumentException("Existing node '" + data + "' not found.");
-        }
 
         this._remove(data);
+
         dataNode.setData(replacement);
+
         this._put(replacement, dataNode);
+
+        this.incVersion();
     }
 
     /**
@@ -343,7 +378,6 @@ public class Tree<T> implements Serializable {
      * @param data the element to prune to
      */
     public void prune(T data) {
-
         final List<T> path = this.getPath(data);
         final List<T> descendants = this.getDescendants(data);
 
@@ -371,7 +405,7 @@ public class Tree<T> implements Serializable {
      * Removes all elements from the tree.
      */
     public void clear() {
-        this.root.children.clear();
+        this.root.getChildren().clear();
         this.nodes.clear();
     }
 
@@ -396,6 +430,7 @@ public class Tree<T> implements Serializable {
 
         node.getParent().remove(node);
         this._remove(data);
+        this.incVersion();
 
         return true;
     }
@@ -414,39 +449,6 @@ public class Tree<T> implements Serializable {
         boolean result = false;
         for (T t : toRemove) {
             result |= this.remove(t);
-        }
-        return result;
-    }
-
-    /**
-     * Returns the parent element for the given element.
-     *
-     * @param data the element
-     * @return the parent element or <code>null</code> if the parent element is a root element
-     * @throws IllegalArgumentException if the element is not found in the tree
-     */
-    public T getParent(T data) {
-        Node<T> node = this.nodes.get(data);
-        if (node == null) {
-            throw new IllegalArgumentException("Element '" + data + "' not found.");
-        }
-        Node<T> parent = node.getParent();
-        if (parent != null) {
-            return parent.getData();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns all root elements of the tree.
-     *
-     * @return the root elements
-     */
-    public List<T> getRoots() {
-        List<T> result = new ArrayList<>();
-        for (Node<T> node : this.root.getChildren()) {
-            result.add(node.getData());
         }
         return result;
     }
@@ -478,32 +480,15 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Returns the list of children of the given element.
-     *
-     * @param parent the parent element
-     * @return the list of children
-     * @throws IllegalArgumentException if the parent element is not found in the tree
-     */
-    public List<T> getChildren(T parent) {
-        final Node<T> parentNode = this.nodes.get(parent);
-        if (parentNode == null) {
-            throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
-        }
-        List<T> result = new ArrayList<>();
-        for (Node<T> node : parentNode.getChildren()) {
-            result.add(node.getData());
-        }
-        return result;
-    }
-
-    /**
      * Returns a list of descendants for a given node
      *
      * @param data the subtree root
      * @return the list of descendants
      */
     public List<T> getDescendants(T data) {
-        return this.getPreorderList(data);
+        List<T> preorderList = this.getPreorderList(data);
+        preorderList.remove(data);
+        return preorderList;
     }
 
     /**
@@ -513,11 +498,10 @@ public class Tree<T> implements Serializable {
      * @return <code>true</code> if the given node has children, <code>false</code> otherwise
      */
     public boolean hasChildren(T parent) {
+        this.assertInTree(parent);
+
         final Node<T> parentNode = this.nodes.get(parent);
-        if (parentNode == null) {
-            throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
-        }
-        return parentNode.children.size() > 0;
+        return parentNode.getChildren().size() > 0;
     }
 
     /**
@@ -587,6 +571,55 @@ public class Tree<T> implements Serializable {
     }
 
     /**
+     * Returns the parent element for the given element.
+     *
+     * @param data the element
+     * @return the parent element or <code>null</code> if the parent element is a root element
+     * @throws IllegalArgumentException if the element is not found in the tree
+     */
+    public T getParent(T data) {
+        Node<T> node = this.nodes.get(data);
+        if (node == null) {
+            throw new IllegalArgumentException("Element '" + data + "' not found.");
+        }
+
+        Node<T> parent = node.getParent();
+        return parent.getData();
+    }
+
+    /**
+     * Returns all root elements of the tree.
+     *
+     * @return the root elements
+     */
+    public List<T> getRoots() {
+        List<T> result = new ArrayList<>();
+        for (Node<T> node : this.root.getChildren()) {
+            result.add(node.getData());
+        }
+        return result;
+    }
+
+    /**
+     * Returns the list of children of the given element.
+     *
+     * @param parent the parent element
+     * @return the list of children
+     * @throws IllegalArgumentException if the parent element is not found in the tree
+     */
+    public List<T> getChildren(T parent) {
+        this.assertInTree(parent);
+
+        final Node<T> parentNode = this.nodes.get(parent);
+
+        List<T> result = new ArrayList<>();
+        for (Node<T> node : parentNode.getChildren()) {
+            result.add(node.getData());
+        }
+        return result;
+    }
+
+    /**
      * Checks if a given element is the last child of its parent node.
      *
      * @param data the element
@@ -643,29 +676,6 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Returns the path (including the element itself) to the given element as list.
-     *
-     * @param data the element
-     * @return a list of elements that represents the path to the element
-     * @throws IllegalArgumentException if the element is not found in the tree
-     */
-    public List<T> getPath(T data) {
-        Node<T> node = this.nodes.get(data);
-        if (node == null) {
-            throw new IllegalArgumentException("Element '" + data + "' not found.");
-        }
-
-        List<T> path = new ArrayList<>();
-        while (node.getParent() != null) {
-            path.add(node.getData());
-            node = node.getParent();
-        }
-
-        Collections.reverse(path);
-        return path;
-    }
-
-    /**
      * Returns the path (including the element itself) to the given element as (degenerated) tree. The result tree is
      * degenerated such that each element has exactly one child element.
      *
@@ -686,6 +696,29 @@ public class Tree<T> implements Serializable {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the path (including the element itself) to the given element as list.
+     *
+     * @param data the element
+     * @return a list of elements that represents the path to the element
+     * @throws IllegalArgumentException if the element is not found in the tree
+     */
+    public List<T> getPath(T data) {
+        Node<T> node = this.nodes.get(data);
+        if (node == null) {
+            throw new IllegalArgumentException("Element '" + data + "' not found.");
+        }
+
+        List<T> path = new ArrayList<>();
+        while (node.getParent() != null) {
+            path.add(node.getData());
+            node = node.getParent();
+        }
+
+        Collections.reverse(path);
+        return path;
     }
 
     /**
@@ -785,7 +818,7 @@ public class Tree<T> implements Serializable {
      * @return <code>true</code> if the element is a child element, <code>false</code> otherwise
      */
     public boolean isChild(T data, T data2) {
-        return getChildren(data2).contains(data);
+        return this.getChildren(data2).contains(data);
     }
 
     /**
@@ -796,18 +829,18 @@ public class Tree<T> implements Serializable {
      * @return <code>true</code> if the element is a descendant, <code>false</code> otherwise
      */
     public boolean isDescendant(T data, T data2) {
-        return getPreorderList(data2).contains(data);
+        return !data.equals(data2) && this.getPreorderList(data2).contains(data);
     }
 
     /**
-     * Checks if an element is an ancestor of another element.
+     * Checks, if an element is an ancestor of another element.
      *
      * @param data  the ancestor to check against
      * @param data2 the item to check
      * @return <code>true</code> if the element is an ancestor, <code>false</code> otherwise
      */
     public boolean isAncestor(T data, T data2) {
-        return getPreorderList(data).contains(data);
+        return !data.equals(data2) && this.getPreorderList(data).contains(data2);
     }
 
     /**
@@ -866,7 +899,7 @@ public class Tree<T> implements Serializable {
         }
         List<T> result = new ArrayList<>();
         this._preorder(node, result);
-        return result.subList(1, result.size());
+        return result.subList(0, result.size());
     }
 
     /**
@@ -908,20 +941,8 @@ public class Tree<T> implements Serializable {
     }
 
     public Iterator<List<T>> getBranchesIterator() {
-        class Index {
-            private int value = 0;
-
-            public int get() {
-                return value;
-            }
-
-            public void inc() {
-                this.value++;
-            }
-        }
-
         List<T> leafs = this.getLeafs();
-        final Index index = new Index();
+        final Counter index = new Counter();
         return new Iterator<List<T>>() {
             @Override
             public boolean hasNext() {
@@ -1285,14 +1306,45 @@ public class Tree<T> implements Serializable {
         return result;
     }
 
-    public String toStringInternal() {
-        return this.nodes.toString();
-    }
-
     public String toString(ElementFormatter<T> formatter) {
         String result = "";
         result += this.root.toString(-1, formatter);
         return result;
+    }
+
+    /**
+     * A tree instance carries a version information taht can be used to track changes of the tree. Each method that
+     * adds or removes at least one element increases the version number by one.
+     *
+     * @return the version of the tree
+     */
+    public long getVersion() {
+        return version;
+    }
+
+    private void incVersion() {
+        this.version++;
+    }
+
+    private void assertNotInTree(T data) {
+        if (this.nodes.containsKey(data)) {
+            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
+        }
+    }
+
+    private void assertInTree(T data) {
+        Node<T> parentNode = this.nodes.get(data);
+        if (parentNode == null) {
+            throw new IllegalArgumentException("Parent element '" + data + "' not found.");
+        }
+    }
+
+    private void _put(T data, Node<T> newNode) {
+        this.nodes.put(data, newNode);
+    }
+
+    private void _remove(T data) {
+        this.nodes.remove(data);
     }
 
     private <S> void _map(Node<T> node, Mapper<T, S> mapper, Node<S> resultNode, Tree<S> resultTree) {
@@ -1375,232 +1427,27 @@ public class Tree<T> implements Serializable {
     }
 
     private Node<T> _add(T data) {
-        if (this.nodes.containsKey(data)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
+        this.assertNotInTree(data);
 
         Node<T> newNode = new Node<>(this.root, data);
         this.root.add(newNode);
+
         this._put(data, newNode);
+        this.incVersion();
 
         return newNode;
     }
 
     private Node<T> _addChild(T parent, T data) {
-        if (this.nodes.containsKey(data)) {
-            throw new IllegalArgumentException("Element '" + data + "' already in tree.");
-        }
+        this.assertNotInTree(data);
+        this.assertInTree(parent);
 
         Node<T> parentNode = this.nodes.get(parent);
-        if (parentNode == null) {
-            throw new IllegalArgumentException("Parent element '" + parent + "' not found.");
-        }
 
         Node<T> newNode = new Node<>(parentNode, data);
         parentNode.add(newNode);
         this._put(data, newNode);
 
         return newNode;
-    }
-
-    public long getVersion() {
-        return version;
-    }
-
-    private void _put(T data, Node<T> newNode) {
-        this.version++;
-        this.nodes.put(data, newNode);
-    }
-
-    private void _remove(T data) {
-        this.version++;
-        this.nodes.remove(data);
-    }
-
-    /**
-     * Helper method to build a tree from the given list of elements. The elements are added as root elements of the
-     * tree.
-     *
-     * @param l the list of elements
-     * @return a tree with all elements in the list
-     */
-    public static <T> Tree<T> asTree(T... l) {
-        Tree<T> result = new Tree<>();
-        for (T t : l) {
-            result.add(t);
-        }
-        return result;
-    }
-
-    /**
-     * Helper method to build a degenerated (i.e. a tree with only a single path) tree from the given list of elements.
-     * The first element becomes the root node, all subsequent elements are added below their respective predecessors. *
-     *
-     * @param l the list of elements
-     * @return a tree with all elements in the list
-     */
-    public static <T> Tree<T> asDegeneratedTree(T... l) {
-        Tree<T> result = new Tree<>();
-        T parent = null;
-        for (T t : l) {
-            if (parent == null) {
-                result.add(t);
-            } else {
-                result.addChild(parent, t);
-            }
-            parent = t;
-        }
-        return result;
-    }
-
-    public interface Visitor<T> {
-
-        boolean visit(T data);
-    }
-
-    public interface PrePostVisitor<T> {
-
-        boolean visitPre(T data);
-
-        boolean visitPost(T data);
-    }
-
-    public interface Filter<T> {
-        boolean accept(T data);
-    }
-
-    public interface RetainingFilter<T> extends Filter<T> {
-
-        boolean retain(T data);
-    }
-
-    public interface Mapper<T, S> {
-
-        S map(T data);
-    }
-
-    public interface ElementFormatter<T> {
-
-        String format(T data);
-    }
-
-    public static class IdentityMapper<S> implements Mapper<S, S> {
-
-        @Override
-        public S map(S data) {
-            return data;
-        }
-    }
-
-    public static class ItemWrapper<T> {
-
-        private T item;
-
-        public ItemWrapper(T item) {
-            this.item = item;
-        }
-
-        public T getItem() {
-            return item;
-        }
-
-        @Override
-        public String toString() {
-            return this.item.toString();
-        }
-    }
-
-    private static class Node<T> implements Serializable {
-
-        public static final long serialVersionUID = 42L;
-
-        private Node<T> parent;
-        private T data;
-        private final List<Node<T>> children = new ArrayList<>();
-
-        public Node() {
-        }
-
-        public Node(Node<T> parent, T data) {
-            this.parent = parent;
-            this.data = data;
-        }
-
-        public Node<T> getParent() {
-            return this.parent;
-        }
-
-        public T getData() {
-            return this.data;
-        }
-
-        public void setData(T data) {
-            this.data = data;
-        }
-
-        public List<Node<T>> getChildren() {
-            return this.children;
-        }
-
-        public void add(Node<T> child) {
-            this.children.add(child);
-            child.parent = this;
-        }
-
-        public void add(int index, Node<T> child) {
-            this.children.add(index, child);
-            child.parent = this;
-        }
-
-        public void push(Node<T> child) {
-            this.children.add(0, child);
-            child.parent = this;
-        }
-
-        public void remove(Node<T> child) {
-            this.children.remove(child);
-        }
-
-        public String toString(int depth, ElementFormatter<T> formatter) {
-            String result = indent(depth * 2);
-
-            if (this.data != null) {
-                result += formatter.format(this.data) + "\n";
-            } else {
-                // ignore root node
-                if (depth != -1) {
-                    result += "\n";
-                }
-            }
-            for (Node<T> child : this.children) {
-                result += child.toString(depth + 1, formatter);
-            }
-            return result;
-        }
-
-        private String indent(int depth) {
-            StringBuilder b = new StringBuilder();
-            for (int i = 0; i < depth; i++) {
-                b.append(" ");
-            }
-            return b.toString();
-        }
-
-        public int getDepth() {
-            int depth = 0;
-
-            Node<T> node = this;
-            while (node.getParent() != null) {
-                depth++;
-                node = node.getParent();
-            }
-
-            return depth - 1;
-        }
-
-        @Override
-        public String toString() {
-            return this.data != null ? this.data.toString() : "root";
-        }
     }
 }

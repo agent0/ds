@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,7 +10,7 @@ public class TestStabilize extends BaseTreeTest {
     public void testRemoveLeafs() {
         Assert.assertEquals(t.size(), 9);
 
-        t.stabilize(new Tree.Filter<TestItem>() {
+        t.stabilize(new Filter<TestItem>() {
 
             @Override
             public boolean accept(TestItem data) {
@@ -27,7 +25,7 @@ public class TestStabilize extends BaseTreeTest {
     public void testAlwaysFalse() {
         Assert.assertEquals(t.size(), 9);
 
-        t.stabilize(new Tree.Filter<TestItem>() {
+        t.stabilize(new Filter<TestItem>() {
 
             @Override
             public boolean accept(TestItem data) {
@@ -42,7 +40,7 @@ public class TestStabilize extends BaseTreeTest {
     public void testStabilize() {
         Assert.assertEquals(t.size(), 9);
 
-        t.stabilize(new Tree.Filter<TestItem>() {
+        t.stabilize(new Filter<TestItem>() {
 
             @Override
             public boolean accept(TestItem data) {

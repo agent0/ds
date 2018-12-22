@@ -1,8 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree;
-import de.agentlab.ds.Tree.ItemWrapper;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

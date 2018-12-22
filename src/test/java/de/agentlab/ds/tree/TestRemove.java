@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -74,7 +72,7 @@ public class TestRemove extends BaseTreeTest {
 
         Assert.assertTrue(t.contains(i_0));
 
-        boolean removed = t.remove(new Tree.Filter<TestItem>() {
+        boolean removed = t.remove(new Filter<TestItem>() {
 
             @Override
             public boolean accept(TestItem item) {
@@ -93,7 +91,7 @@ public class TestRemove extends BaseTreeTest {
 
         Assert.assertTrue(t.contains(i_0));
 
-        boolean removed = t.remove(new Tree.Filter<TestItem>() {
+        boolean removed = t.remove(new Filter<TestItem>() {
 
             @Override
             public boolean accept(TestItem item) {
@@ -110,7 +108,7 @@ public class TestRemove extends BaseTreeTest {
 
         Assert.assertTrue(t.contains(i_0));
 
-        boolean removed = t.remove(new Tree.Filter<TestItem>() {
+        boolean removed = t.remove(new Filter<TestItem>() {
 
             @Override
             public boolean accept(TestItem item) {

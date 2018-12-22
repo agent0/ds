@@ -30,6 +30,21 @@ public class TestTraversal extends BaseTreeTest {
     }
 
     @Test
+    public void testPreorderForElement() {
+        Assert.assertEquals(t.size(), 9);
+
+        List<TestItem> expected = new ArrayList<>();
+        expected.add(i_1);
+        expected.add(i_11);
+        expected.add(i_110);
+        expected.add(i_111);
+
+        List<TestItem> l = t.getPreorderList(i_1);
+        Assert.assertEquals(l.size(), 4);
+        Assert.assertEquals(l, expected);
+    }
+
+    @Test
     public void testBreadthFirst() {
         Assert.assertEquals(t.size(), 9);
 

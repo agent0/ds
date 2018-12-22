@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;

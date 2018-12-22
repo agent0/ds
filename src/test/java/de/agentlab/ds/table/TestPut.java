@@ -1,7 +1,5 @@
 package de.agentlab.ds.table;
 
-import de.agentlab.ds.Table;
-
 import java.util.HashMap;
 import java.util.Map;
 

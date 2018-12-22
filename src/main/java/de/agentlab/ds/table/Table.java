@@ -1,4 +1,4 @@
-package de.agentlab.ds;
+package de.agentlab.ds.table;
 
 
 import java.util.ArrayList;
@@ -37,13 +37,8 @@ public class Table<S, T, V> {
         }
     }
 
-    public void put(S rowKey, T colKey, V value) {
-        Map<T, V> row = this.data.get(rowKey);
-        if (row == null) {
-            row = new HashMap<T, V>();
-            this.data.put(rowKey, row);
-        }
-        row.put(colKey, value);
+    public boolean contains(S rowKey, T colKey) {
+        return this.get(rowKey, colKey) != null;
     }
 
     public V get(S rowKey, T colKey) {
@@ -53,10 +48,6 @@ public class Table<S, T, V> {
         } else {
             return row.get(colKey);
         }
-    }
-
-    public boolean contains(S rowKey, T colKey) {
-        return this.get(rowKey, colKey) != null;
     }
 
     public boolean containsRowKey(S rowKey) {
@@ -102,6 +93,10 @@ public class Table<S, T, V> {
         return result;
     }
 
+    public Set<S> getRowKeys() {
+        return this.data.keySet();
+    }
+
     public void moveRow(S fromRowKey, S toRowKey) {
         if (fromRowKey.equals(toRowKey)) {
             return;
@@ -120,6 +115,15 @@ public class Table<S, T, V> {
         }
     }
 
+    public void put(S rowKey, T colKey, V value) {
+        Map<T, V> row = this.data.get(rowKey);
+        if (row == null) {
+            row = new HashMap<T, V>();
+            this.data.put(rowKey, row);
+        }
+        row.put(colKey, value);
+    }
+
     public void removeRow(S rowKey) {
         this.data.remove(rowKey);
     }
@@ -130,18 +134,6 @@ public class Table<S, T, V> {
 
     public void setData(Map<S, Map<T, V>> data) {
         this.data = data;
-    }
-
-    public Set<S> getRowKeys() {
-        return this.data.keySet();
-    }
-
-    public Set<T> getColKeys() {
-        Set<T> colKeys = new HashSet<>();
-        for (S row : getRowKeys()) {
-            colKeys.addAll(data.get(row).keySet());
-        }
-        return colKeys;
     }
 
     public Set<KeyPair<S, T>> getKeyPairs() {
@@ -157,6 +149,13 @@ public class Table<S, T, V> {
         return result;
     }
 
+    public void merge(Table<S, T, V> other) {
+        List<TableEntry<S, T, V>> entries = other.getEntries();
+        for (TableEntry<S, T, V> entry : entries) {
+            this.put(entry.getRowKey(), entry.getColKey(), entry.getValue());
+        }
+    }
+
     public List<TableEntry<S, T, V>> getEntries() {
         List<TableEntry<S, T, V>> result = new ArrayList<TableEntry<S, T, V>>();
         Set<S> rowKeys = this.data.keySet();
@@ -169,13 +168,6 @@ public class Table<S, T, V> {
             }
         }
         return result;
-    }
-
-    public void merge(Table<S, T, V> other) {
-        List<TableEntry<S, T, V>> entries = other.getEntries();
-        for (TableEntry<S, T, V> entry : entries) {
-            this.put(entry.rowKey, entry.colKey, entry.value);
-        }
     }
 
     public int size() {
@@ -232,80 +224,12 @@ public class Table<S, T, V> {
         return result;
     }
 
-    public static class TableEntry<S, T, V> {
-        private S rowKey;
-        private T colKey;
-        private V value;
-
-        public TableEntry(S rowKey, T colKey, V value) {
-            this.rowKey = rowKey;
-            this.colKey = colKey;
-            this.value = value;
+    public Set<T> getColKeys() {
+        Set<T> colKeys = new HashSet<>();
+        for (S row : getRowKeys()) {
+            colKeys.addAll(data.get(row).keySet());
         }
-
-        public S getRowKey() {
-            return rowKey;
-        }
-
-        public T getColKey() {
-            return colKey;
-        }
-
-        public V getValue() {
-            return value;
-        }
+        return colKeys;
     }
 
-    public static class KeyPair<S, T> {
-        private S rowKey;
-        private T colKey;
-
-        public KeyPair(S rowKey, T colKey) {
-            this.rowKey = rowKey;
-            this.colKey = colKey;
-        }
-
-        public S getRowKey() {
-            return rowKey;
-        }
-
-        public T getColKey() {
-            return colKey;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            KeyPair<?, ?> keyPair = (KeyPair<?, ?>) o;
-
-            if (rowKey != null ? !rowKey.equals(keyPair.rowKey) : keyPair.rowKey != null) return false;
-            return colKey != null ? colKey.equals(keyPair.colKey) : keyPair.colKey == null;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = rowKey != null ? rowKey.hashCode() : 0;
-            result = 31 * result + (colKey != null ? colKey.hashCode() : 0);
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "<" + rowKey + ", " + colKey + ">";
-        }
-    }
-
-    public interface RowKeyFormatter<S> {
-        String format(S rowKey);
-    }
-
-    public interface ColKeyFormatter<T> {
-        String format(T colKey);
-    }
-
-    public interface ValueFormatter<V> {
-        String format(V value);
-    }
 }

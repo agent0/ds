@@ -98,6 +98,13 @@ public class TestExceptions extends BaseTreeTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testAddParentDuplicate() {
+        Assert.assertEquals(t.size(), 9);
+
+        t.addParent(i_0, i_011);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testInsertBeforeDuplicate() {
         Assert.assertEquals(t.size(), 9);
 
@@ -167,7 +174,6 @@ public class TestExceptions extends BaseTreeTest {
         t.map(new TestItem("!"), null);
     }
 
-
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void testInsertIndexNegative() {
         Assert.assertEquals(t.size(), 9);
@@ -182,4 +188,17 @@ public class TestExceptions extends BaseTreeTest {
         t.addChildAt(t.asList().get(1), 3, new TestItem("0.1.0a"));
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testReplaceAlreadyInTree() {
+        Assert.assertEquals(t.size(), 9);
+
+        t.replace(i_3, i_0);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testReplaceNotInTree() {
+        Assert.assertEquals(t.size(), 9);
+
+        t.replace(i_3, i_30);
+    }
 }

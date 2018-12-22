@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree.RetainingFilter;
-
 import java.util.ArrayList;
 import java.util.List;
 

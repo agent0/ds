@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -21,7 +19,7 @@ public class TestToString extends BaseTreeTest {
     public void testToStringWithElementFormatter() {
         Assert.assertEquals(t.size(), 9);
 
-        String flat = TreeTestUtils.toFlatString(t, new Tree.ElementFormatter<TestItem>() {
+        String flat = TreeTestUtils.toFlatString(t, new ElementFormatter<TestItem>() {
 
             @Override
             public String format(TestItem data) {

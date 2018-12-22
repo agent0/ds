@@ -1,7 +1,6 @@
 package de.agentlab.ds.table;
 
 import de.agentlab.AssertUtils;
-import de.agentlab.ds.Table;
 
 import java.util.Map;
 

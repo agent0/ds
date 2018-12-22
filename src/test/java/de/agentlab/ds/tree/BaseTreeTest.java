@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree;
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

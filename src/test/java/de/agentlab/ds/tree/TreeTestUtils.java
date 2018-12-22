@@ -1,8 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree;
-import de.agentlab.ds.Tree.ElementFormatter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 

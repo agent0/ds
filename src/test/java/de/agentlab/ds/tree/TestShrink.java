@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree.Filter;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

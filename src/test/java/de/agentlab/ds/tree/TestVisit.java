@@ -1,7 +1,5 @@
 package de.agentlab.ds.tree;
 
-import de.agentlab.ds.Tree;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +91,7 @@ public class TestVisit extends BaseTreeTest {
         Assert.assertEquals(t.size(), 9);
 
         final List<TestItem> visited = new ArrayList<>();
-        t.visit(new Tree.PrePostVisitor<TestItem>() {
+        t.visit(new PrePostVisitor<TestItem>() {
 
             @Override
             public boolean visitPre(TestItem data) {

@@ -1,7 +1,5 @@
 package de.agentlab.ds.table;
 
-import de.agentlab.ds.Table;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
