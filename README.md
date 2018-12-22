@@ -1,6 +1,6 @@
 # My data structures
 
-This projekt is a collection of some basic data strutures that I use frequently in my projects.
+This project is a collection of some basic data strutures that I use frequently in my projects.
 The data structures are taylored towards my personal needs and thus may not be universally usable.
 
 ## Tree

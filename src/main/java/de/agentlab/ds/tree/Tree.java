@@ -40,7 +40,8 @@ public class Tree<T> implements Serializable {
      * Helper method to build a tree from the given list of elements. The elements are added as root elements of the
      * tree.
      *
-     * @param l the list of elements
+     * @param l   the list of elements
+     * @param <T> the target type for the new tree
      * @return a tree with all elements in the list
      */
     public static <T> Tree<T> asTree(T... l) {
@@ -55,7 +56,8 @@ public class Tree<T> implements Serializable {
      * Helper method to build a degenerated (i.e. a tree with only a single path) tree from the given list of elements.
      * The first element becomes the root node, all subsequent elements are added below their respective predecessors. *
      *
-     * @param l the list of elements
+     * @param l   the list of elements
+     * @param <T> the target type for the new tree
      * @return a tree with all elements in the list
      */
     public static <T> Tree<T> asDegeneratedTree(T... l) {
@@ -389,6 +391,7 @@ public class Tree<T> implements Serializable {
      * element itself along with its ancestors and descendants.
      *
      * @param data the element to prune to
+     * @return the pruned tree
      */
     public Tree<T> pruneCopy(T data) {
         Tree<T> result = this.copy();
@@ -437,7 +440,7 @@ public class Tree<T> implements Serializable {
 
     /**
      * Removes all elements that are accepted by the given filter. The elements that are accepted are removed using the
-     * {@link #remove(T)} method.
+     * {@link #remove} method.
      *
      * @param f the {@link Filter} to apply
      * @return <code>true</code> if at least one element has been removed, <code>false</code> otherwise
@@ -990,7 +993,7 @@ public class Tree<T> implements Serializable {
     /**
      * Retains all elements from the tree that are accepted by the {@link Filter}. If an element is retained, all
      * elements on the path to a root element are retained as well. The elements that are rejected are removed using the
-     * {@link #remove(T)} method.
+     * {@link #remove} method.
      *
      * @param filter the {@link Filter} to use
      * @return the filtered tree
@@ -1044,7 +1047,7 @@ public class Tree<T> implements Serializable {
 
     /**
      * Retains all elements from the tree that are accepted by the {@link Filter}. If an element is rejected, all
-     * children are rejected as well. The elements that are rejected are removed using the {@link #remove(T)} method.
+     * children are rejected as well. The elements that are rejected are removed using the {@link #remove} method.
      *
      * @param filter the {@link Filter} to use
      * @return the tree
@@ -1082,7 +1085,7 @@ public class Tree<T> implements Serializable {
 
     /**
      * Retains all elements from the tree that are accepted by the {@link Filter}. The elements that are rejected are
-     * removed using the {@link #pull(T)} method.
+     * removed using the {@link #pull} method.
      *
      * @param filter the {@link Filter} to use
      */
@@ -1103,7 +1106,7 @@ public class Tree<T> implements Serializable {
 
     /**
      * Retains all elements from the given subtree that are accepted by the {@link Filter}. The elements that are
-     * rejected are removed using the {@link #pull(T)} method.
+     * rejected are removed using the {@link #pull} method.
      *
      * @param data   the subtree root
      * @param filter the {@link Filter} to use
@@ -1151,6 +1154,7 @@ public class Tree<T> implements Serializable {
      * {@link Mapper}.
      *
      * @param mapper the {@link Mapper} to use
+     * @param <S>    the target type
      * @return a homomorphous tree of type <code>S</code>
      */
     public <S> Tree<S> map(Mapper<T, S> mapper) {
@@ -1167,9 +1171,11 @@ public class Tree<T> implements Serializable {
      *
      * @param data   the subtree root
      * @param mapper the {@link Mapper} to use
+     * @param <S>    the target type
      * @return a homomorphous tree of type <code>S</code>
      * @throws IllegalArgumentException if the element is not found in the tree
      */
+
     public <S> Tree<S> map(T data, Mapper<T, S> mapper) {
         Node<T> node = this.nodes.get(data);
         if (node == null) {
