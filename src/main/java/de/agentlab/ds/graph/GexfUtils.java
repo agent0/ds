@@ -1,7 +1,6 @@
-package de.agentlab.ds.output;
+package de.agentlab.ds.graph;
 
 import de.agentlab.ds.common.ColorUtils;
-import de.agentlab.ds.graph.Node;
 
 
 public class GexfUtils {

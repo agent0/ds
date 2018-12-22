@@ -1,4 +1,4 @@
-package de.agentlab.ds.output;
+package de.agentlab.ds.graph;
 
 public class GraphmlUtils {
     public static String createNode(String type, String name, String color) {

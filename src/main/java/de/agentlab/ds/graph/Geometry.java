@@ -1,4 +1,4 @@
-package de.agentlab.ds.output;
+package de.agentlab.ds.graph;
 
 public class Geometry {
     private int width = -1;

@@ -1,7 +1,5 @@
 package de.agentlab.ds.graph;
 
-import de.agentlab.ds.output.GraphmlUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 

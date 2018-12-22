@@ -1,9 +1,5 @@
 package de.agentlab.ds.graph;
 
-import de.agentlab.ds.output.GexfUtils;
-import de.agentlab.ds.output.GraphmlUtils;
-import de.agentlab.ds.output.StyleableNode;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
