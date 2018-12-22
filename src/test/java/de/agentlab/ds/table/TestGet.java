@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestGet extends BaseTableTest {
 
+    @Test
     public void testGetRow() {
         Table<String, String, String> t = new Table<>();
 
@@ -21,6 +22,7 @@ public class TestGet extends BaseTableTest {
         AssertUtils.assertEqualsNoOrder(t.getRow("r"), asList("v1", "v2", "v3"));
     }
 
+    @Test
     public void testGetRowMap() {
         Table<String, String, String> t = new Table<>();
 
@@ -37,6 +39,7 @@ public class TestGet extends BaseTableTest {
         Assert.assertEquals(rowMap.get("c3"), "v3");
     }
 
+    @Test
     public void testGetRowMapNotFound() {
         Table<String, String, String> t = new Table<>();
 
@@ -47,6 +50,7 @@ public class TestGet extends BaseTableTest {
         Assert.assertTrue(colData.isEmpty());
     }
 
+    @Test
     public void testGetCol() {
         Table<String, String, String> t = new Table<>();
 

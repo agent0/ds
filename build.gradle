@@ -23,14 +23,19 @@ sourceSets.test.compileClasspath += configurations.providedCompile
 test {
     useTestNG() {
         suiteXmlBuilder().suite(name: 'ds-testsuite', parallel: 'tests') {
-            test(name: 'tree-tests') {
+            test(name: 'graph-tests') {
                 packages {
-                    'package'(name: 'de.agentlab.ds.tree.*')
+                    'package'(name: 'de.agentlab.ds.graph.*')
                 }
             }
             test(name: 'table-tests') {
                 packages {
                     'package'(name: 'de.agentlab.ds.table.*')
+                }
+            }
+            test(name: 'tree-tests') {
+                packages {
+                    'package'(name: 'de.agentlab.ds.tree.*')
                 }
             }
         }

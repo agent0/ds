@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestRemove extends BaseTableTest {
 
+    @Test
     public void testRemove() {
         Table<String, String, String> t = new Table<>();
 
@@ -23,6 +24,7 @@ public class TestRemove extends BaseTableTest {
         Assert.assertEquals(t.get("r", "c"), null);
     }
 
+    @Test
     public void testRemoveNotFound() {
         Table<String, String, String> t = new Table<>();
 
@@ -33,6 +35,7 @@ public class TestRemove extends BaseTableTest {
         Assert.assertNull(removed);
     }
 
+    @Test
     public void testRemoveRow() {
         Table<String, String, String> t = new Table<>();
 
@@ -48,6 +51,7 @@ public class TestRemove extends BaseTableTest {
         Assert.assertEquals(t.contains("r", "c2"), false);
     }
 
+    @Test
     public void testClear() {
         Table<String, String, String> t = new Table<>();
 

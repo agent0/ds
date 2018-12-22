@@ -87,6 +87,12 @@ public class Graph {
     }
 
     public void add(Edge e) {
+        if (this.findNodeById(e.getFromId()) == null) {
+            this.add(e.getFrom());
+        }
+        if (this.findNodeById(e.getToId()) == null) {
+            this.add(e.getTo());
+        }
         this.edges.add(e);
     }
 

@@ -1,6 +1,5 @@
 package de.agentlab.ds.graph;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -10,7 +9,6 @@ public class Edge {
     private String color;
     private boolean visible = true;
     private boolean directed = true;
-    private boolean addNodesAutomatically = true;
 
     public Edge(Node from, Node to) {
         super();
@@ -69,22 +67,16 @@ public class Edge {
         return result;
     }
 
-    public String toGraphML() {
-        return this.toGraphML(new ArrayList<Node>());
-    }
-
     public String toGraphML(List<Node> drawn) {
         String result = "";
 
-        if (this.isAddNodesAutomatically()) {
-            if (!drawn.contains(this.from)) {
-                drawn.add(this.from);
-                result += this.from.toGraphML();
-            }
-            if (!drawn.contains(this.to)) {
-                drawn.add(this.to);
-                result += this.to.toGraphML();
-            }
+        if (!drawn.contains(this.from)) {
+            drawn.add(this.from);
+            result += this.from.toGraphML();
+        }
+        if (!drawn.contains(this.to)) {
+            drawn.add(this.to);
+            result += this.to.toGraphML();
         }
 
         if (this.isVisible()) {
@@ -116,14 +108,6 @@ public class Edge {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-    public boolean isAddNodesAutomatically() {
-        return this.addNodesAutomatically;
-    }
-
-    public void setAddNodesAutomatically(boolean addNodesAutomatically) {
-        this.addNodesAutomatically = addNodesAutomatically;
     }
 
     public String toGexf(List<Node> drawn) {

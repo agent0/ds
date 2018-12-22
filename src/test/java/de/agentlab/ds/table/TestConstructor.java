@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestConstructor extends BaseTableTest {
 
+    @Test
     public void testConstructor() {
         Table<String, String, String> t = new Table<>();
 

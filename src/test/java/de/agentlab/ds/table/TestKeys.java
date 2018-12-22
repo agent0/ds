@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestKeys extends BaseTableTest {
 
+    @Test
     public void testGetRowColKeys() {
         Table<String, String, String> t = new Table<>();
 
@@ -37,6 +38,7 @@ public class TestKeys extends BaseTableTest {
                 new KeyPair<>("r2", "c3"))));
     }
 
+    @Test
     public void testContainsRowKey() {
         Table<String, String, String> t = new Table<>();
 

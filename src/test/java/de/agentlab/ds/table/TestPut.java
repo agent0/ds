@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestPut extends BaseTableTest {
 
+    @Test
     public void testPut() {
         Table<String, String, String> t = new Table<>();
 
@@ -19,6 +20,7 @@ public class TestPut extends BaseTableTest {
         Assert.assertEquals(t.get("r", "c"), "v");
     }
 
+    @Test
     public void testPutOverwrite() {
         Table<String, String, String> t = new Table<>();
 
@@ -30,6 +32,7 @@ public class TestPut extends BaseTableTest {
         Assert.assertEquals(t.get("r", "c"), "v2");
     }
 
+    @Test
     public void testPutRow() {
         Table<String, String, String> t = new Table<>();
 

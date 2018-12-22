@@ -5,26 +5,6 @@ import de.agentlab.ds.common.ColorUtils;
 
 public class GexfUtils {
 
-    public static String createNode(String id, String type, String label, Shape shape, String color,
-                                    Geometry geometry) {
-        String result = "";
-        if (label != null) {
-            result += "<node id=\"" + id + "\" label=\"" + label + "\">\n";
-        } else {
-            result += "<node id=\"" + id + "\">\n";
-        }
-
-        if (color != null) {
-            int[] rgb = ColorUtils.toRGB(color);
-            result += "<viz:color r=\"" + rgb[0] + "\" g=\"" + rgb[1] + "\" b=\"" + rgb[2] + "\"/>";
-        } else {
-            result += "<viz:color g=\"51\" r=\"255\" b=\"51\"/>";
-        }
-        result += "</node>\n";
-
-        return result;
-    }
-
     public static String createNode(Node node) {
         String result = "";
         if (node.getLabel() != null) {

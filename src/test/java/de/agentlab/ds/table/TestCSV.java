@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestCSV extends BaseTableTest {
 
+    @Test
     public void testToCsv() {
         Table<String, String, String> t = new Table<>();
 

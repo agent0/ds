@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestMerge extends BaseTableTest {
 
+    @Test
     public void testMerge() {
         Table<String, String, String> t = new Table<>();
 

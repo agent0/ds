@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestMoveRow extends BaseTableTest {
 
+    @Test
     public void testMoveRow() {
         Table<String, String, String> t = new Table<>();
 

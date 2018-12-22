@@ -1,9 +1,6 @@
 package de.agentlab.ds.graph;
 
 public class GraphmlUtils {
-    public static String createNode(String type, String name, String color) {
-        return createNode(name, type, color, null, null, new String[]{});
-    }
 
     public static String createNode(String name, String nodeStyle, String color, Shape shape,
                                     Geometry geometry, String[] labelAttributes) {
@@ -14,8 +11,10 @@ public class GraphmlUtils {
             result += "<y:Fill color=\"#" + color + "\" transparent=\"false\"/>\n";
         }
         result += "<y:NodeLabel alignment=\"center\" visible=\"true\" ";
-        for (int i = 0; i < labelAttributes.length; i++) {
-            result += labelAttributes[i] + " ";
+        if (labelAttributes != null) {
+            for (int i = 0; i < labelAttributes.length; i++) {
+                result += labelAttributes[i] + " ";
+            }
         }
         result += ">";
         result += name;
@@ -31,13 +30,8 @@ public class GraphmlUtils {
         return result;
     }
 
-    public static String createNode(String type, String name) {
-        return createNode(name, type, null, null, null, new String[]{});
-    }
-
-    public static String createNode(String type, String name, Shape shape, String color,
-                                    Geometry geometry) {
-        return createNode(name, type, color, shape, geometry, new String[]{});
+    public static String createNode(String label, String type, String color, Shape shape, Geometry geometry) {
+        return createNode(label, type, color, shape, geometry, null);
     }
 
     public static String createArrowStyle(String color, boolean directed) {
@@ -56,4 +50,5 @@ public class GraphmlUtils {
         result += "</data>\n";
         return result;
     }
+
 }
