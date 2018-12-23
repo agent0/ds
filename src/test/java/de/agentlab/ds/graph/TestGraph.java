@@ -4,7 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @org.testng.annotations.Test
-public class TestEdges {
+public class TestGraph {
 
     @Test
     public void testAddExplicitAddNodes() {

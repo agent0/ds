@@ -138,6 +138,10 @@ public class Node {
         return l;
     }
 
+    public String toString() {
+        return "Node: " + this.id;
+    }
+
     public String toDot(String graphname) {
         return "";
     }

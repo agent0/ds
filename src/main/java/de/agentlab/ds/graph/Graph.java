@@ -114,13 +114,22 @@ public class Graph {
         String result = "";
         result += "Graph: " + this.name + "\n";
         for (Graph sg : this.subgraphs) {
-            result += sg.toString() + "\n";
+            String sgStr = sg.toString();
+            if (sgStr.length() > 0) {
+                result += sgStr + "\n";
+            }
         }
         for (Node node : this.nodes) {
-            result += node.toString() + "\n";
+            String nodeStr = node.toString();
+            if (nodeStr.length() > 0) {
+                result += nodeStr + "\n";
+            }
         }
         for (Edge edge : this.edges) {
-            result += edge.toString() + "\n";
+            String edgeStr = edge.toString();
+            if (edgeStr.length() > 0) {
+                result += edgeStr + "\n";
+            }
         }
         return result;
     }
@@ -138,13 +147,22 @@ public class Graph {
             result += "label=\"" + this.name + "\"";
         }
         for (Graph sg : this.subgraphs) {
-            result += sg.toDot(true) + "\n";
+            String sgStr = sg.toDot(true);
+            if (sgStr.length() > 0) {
+                result += sgStr + "\n";
+            }
         }
         for (Node node : this.nodes) {
-            result += node.toDot(this.name) + "\n";
+            String nodeStr = node.toDot(this.name);
+            if (nodeStr.length() > 0) {
+                result += nodeStr + "\n";
+            }
         }
         for (Edge edge : this.edges) {
-            result += edge.toDot(this.name) + "\n";
+            String edgeStr = edge.toDot(this.name);
+            if (edgeStr.length() > 0) {
+                result += edgeStr + "\n";
+            }
         }
         result += "}";
         return result;

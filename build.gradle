@@ -23,6 +23,11 @@ sourceSets.test.compileClasspath += configurations.providedCompile
 test {
     useTestNG() {
         suiteXmlBuilder().suite(name: 'ds-testsuite', parallel: 'tests') {
+            test(name: 'common-tests') {
+                packages {
+                    'package'(name: 'de.agentlab.ds.common.*')
+                }
+            }
             test(name: 'graph-tests') {
                 packages {
                     'package'(name: 'de.agentlab.ds.graph.*')
@@ -51,7 +56,6 @@ targetCompatibility = 1.8
 dependencies {
     testCompile(
             ['org.testng:testng:6.8.8'],
-//    ['com.google.inject:guice:3.0']
     )
 }
 
@@ -64,21 +68,9 @@ jar {
         into 'src'
     }
 }
-configurations {
-    javancss
-}
 
-dependencies {
-    javancss 'org.codehaus.javancss:javancss:32.53'
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/classes/test"
 }
-
-task javancss {
-    doLast {
-        mkdir reportsDir
-        ant {
-            taskdef name: 'javancss', classname: 'javancss.JavancssAntTask', classpath: configurations.javancss.asPath
-            javancss(srcdir: 'src/main/java', includes: '**/*.java', abortOnFail: 'false', generateReport: 'true', outputfile: "$reportsDir/javancss-report-main.txt", format: "plain")
-            javancss(srcdir: 'src/test/java', includes: '**/*.java', abortOnFail: 'false', generateReport: 'true', outputfile: "$reportsDir/javancss-report-test.txt", format: "plain")
-        }
-    }
-}
+processTestResources.dependsOn copyTestResources

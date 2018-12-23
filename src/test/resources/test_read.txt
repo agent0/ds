@@ -1,0 +1,8 @@
+graph g
+node a
+node b
+node c
+node d
+edge a b
+edge a c
+edge b d
