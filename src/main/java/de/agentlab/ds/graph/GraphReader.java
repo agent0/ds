@@ -8,12 +8,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 
 public class GraphReader {
 
-    private void buildGraph(FileInputStream is, FileOutputStream os) {
+    public void buildGraph(InputStream is, OutputStream os) {
         Graph g = buildGraph(is);
         PrintStream p = new PrintStream(os);
         p.println(g.toGraphML());

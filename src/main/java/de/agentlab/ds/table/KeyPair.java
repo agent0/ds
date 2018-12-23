@@ -1,5 +1,11 @@
 package de.agentlab.ds.table;
 
+/**
+ * Represents a specific position within a table.
+ *
+ * @param <S> the row data type
+ * @param <T> the column data type
+ */
 public class KeyPair<S, T> {
     private S rowKey;
     private T colKey;

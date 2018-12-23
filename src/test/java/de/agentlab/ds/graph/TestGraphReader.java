@@ -1,5 +1,6 @@
 package de.agentlab.ds.graph;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import org.testng.annotations.Test;
@@ -25,6 +26,15 @@ public class TestGraphReader {
 
         s = g.toGexf();
         System.out.println(s);
+    }
+
+    @Test
+    public void testOutputToFile() {
+        GraphReader graphReader = new GraphReader();
+
+        InputStream is = TestGraphReader.class.getResourceAsStream("/test_read.txt");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        graphReader.buildGraph(is, baos);
     }
 
 }
