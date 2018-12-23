@@ -53,8 +53,8 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Helper method to build a degenerated (i.e. a tree with only a single path) tree from the given list of elements.
-     * The first element becomes the root node, all subsequent elements are added below their respective predecessors. *
+     * Helper method to build a degenerated tree (i.e. a tree with only a single path)  from the given list of elements.
+     * The first element becomes the root node, all subsequent elements are added below their respective predecessors.
      *
      * @param l   the list of elements
      * @param <T> the target type for the new tree
@@ -138,7 +138,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Adds a new element as parent of the given element. The new parent element is moved between the data
+     * Adds an element as parent of the given element. The new parent element is inserted between the data
      * element and its current parent element. If the data element is a root node, the new parent is added
      * as root node.
      *
@@ -680,7 +680,7 @@ public class Tree<T> implements Serializable {
 
     /**
      * Returns the path (including the element itself) to the given element as (degenerated) tree. The result tree is
-     * degenerated such that each element has exactly one child element.
+     * degenerated such that each element (except for the last) has exactly one child element.
      *
      * @param data the element
      * @return a tree of elements that represents the path to the element
@@ -725,7 +725,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Visits the elements of the tree a pre-order, starting at the root nodes.
+     * Visits the elements of the tree in pre-order, starting at the root nodes.
      *
      * @param visitor the {@link Visitor} to apply
      */
@@ -738,7 +738,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Visits the elements of the tree a pre-order, starting at the root nodes.
+     * Visits the elements of the tree in pre-order, starting at the root nodes.
      *
      * @param visitor the {@link Visitor} to apply
      */
@@ -751,7 +751,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Visits the elements of a subtree a pre-order.
+     * Visits the elements of a subtree in pre-order.
      *
      * @param data    the root of the subtree to visit
      * @param visitor the {@link Visitor} to apply
@@ -769,7 +769,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Visits the descendants of an element a pre-order. The element itself is not processed by the {@link Visitor}.
+     * Visits the descendants of an element in pre-order. The element itself is not processed by the {@link Visitor}.
      *
      * @param data    the root of the subtree to visit
      * @param visitor the {@link Visitor} to apply
@@ -789,7 +789,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Visits the siblings of an element a pre-order. The element itself is not processed by the {@link Visitor}.
+     * Visits the siblings of an element in pre-order. The element itself is not processed by the {@link Visitor}.
      *
      * @param data    the element which siblings to visit
      * @param visitor the {@link Visitor} to apply
@@ -943,6 +943,9 @@ public class Tree<T> implements Serializable {
         return result;
     }
 
+    /**
+     * @return an iterator for all branches of the tree
+     */
     public Iterator<List<T>> getBranchesIterator() {
         List<T> leafs = this.getLeafs();
         final Counter index = new Counter();
@@ -1068,7 +1071,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Applies the specified filter repeatedly to the tree until no element is removed for a filter application.
+     * Applies the specified filter repeatedly to the tree until no more elements are removed by the filter.
      *
      * @param filter the filter to apply
      * @return the tree
@@ -1244,11 +1247,11 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * Returns the index of the first occurrence of the specified element in this tree, or -1 if this list does not
+     * Returns the index of the first occurrence of the specified element in this tree or -1 if this list does not
      * contain the element.
      *
      * @param data the to look for
-     * @return the index of the first occurrence of the specified element in this tree, or -1 if this list does not
+     * @return the index of the first occurrence of the specified element in this tree or -1 if this list does not
      * contain the element
      */
     public int indexOf(T data) {
@@ -1319,7 +1322,7 @@ public class Tree<T> implements Serializable {
     }
 
     /**
-     * A tree instance carries a version information taht can be used to track changes of the tree. Each method that
+     * A tree instance carries a version information which can be used to track changes of the tree. Each method that
      * adds or removes at least one element increases the version number by one.
      *
      * @return the version of the tree
