@@ -23,6 +23,16 @@ public class TestGet extends BaseTableTest {
     }
 
     @Test
+    public void testGetRowNotFound() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r", "c1", "v1");
+
+        Assert.assertEquals(t.size(), 1);
+        Assert.assertTrue(t.getRow("X").isEmpty());
+    }
+
+    @Test
     public void testGetRowMap() {
         Table<String, String, String> t = new Table<>();
 
@@ -63,4 +73,29 @@ public class TestGet extends BaseTableTest {
         AssertUtils.assertEqualsNoOrder(t.getCol("c1"), asList("v1", "v2"));
     }
 
+    @Test
+    public void testGetData() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r", "c1", "v1");
+        t.put("r", "c3", "v3");
+
+        t.put("r2", "c1", "v2");
+
+        Assert.assertEquals(t.size(), 3);
+        Map<String, Map<String, String>> data = t.getData();
+
+        Map<String, String> r = data.get("r");
+        Assert.assertEquals(r.get("c1"), "v1");
+        Assert.assertEquals(r.get("c3"), "v3");
+
+        Map<String, String> r2 = data.get("r2");
+        Assert.assertEquals(r2.get("c1"), "v2");
+    }
+
+    @Test
+    public void testIsEmpty() {
+        Table<String, String, String> t = new Table<>();
+        Assert.assertTrue(t.isEmpty());
+    }
 }

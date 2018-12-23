@@ -26,4 +26,24 @@ public class TestMoveRow extends BaseTableTest {
         AssertUtils.assertEqualsNoOrder(t.getRow("r3"), asList("v1", "v2", "v3"));
     }
 
+    @Test
+    public void testMoveRowSourceEqualsDest() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r1", "c3", "v3");
+        t.put("r2", "c2", "v");
+
+        Assert.assertEquals(t.size(), 2);
+
+        Assert.assertEquals(t.size(), 2);
+        Assert.assertEquals(t.get("r1", "c3"), "v3");
+        Assert.assertEquals(t.get("r2", "c2"), "v");
+
+        t.moveRow("r1", "r1");
+
+        Assert.assertEquals(t.size(), 2);
+        Assert.assertEquals(t.get("r1", "c3"), "v3");
+        Assert.assertEquals(t.get("r2", "c2"), "v");
+    }
+
 }

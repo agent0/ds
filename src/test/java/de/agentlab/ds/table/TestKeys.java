@@ -2,7 +2,6 @@ package de.agentlab.ds.table;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -26,8 +25,6 @@ public class TestKeys extends BaseTableTest {
 
         Assert.assertEquals(t.getRowKeys(), new HashSet<>(Arrays.asList("r1", "r2")));
         Assert.assertEquals(t.getColKeys(), new HashSet<>(Arrays.asList("c1", "c2", "c3")));
-
-        Set<KeyPair<String, String>> keyPairs = t.getKeyPairs();
 
         Assert.assertEquals(t.getKeyPairs(), new HashSet<>(Arrays.asList(
                 new KeyPair<>("r1", "c1"),
