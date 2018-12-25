@@ -1247,6 +1247,30 @@ public class Tree<T> implements Serializable {
     }
 
     /**
+     * Returns the least common subsumer for the given elements. The least common subsumer is defined as the closest common ancestor to both arguments.
+     *
+     * @param data1 the first data element
+     * @param data2 the second data element
+     * @return the least common subsuber for the given arguments
+     */
+    public T leastCommonSubsumer(T data1, T data2) {
+        this.assertInTree(data1);
+        this.assertInTree(data2);
+
+        List<T> path1 = this.getPath(data1);
+        Collections.reverse(path1);
+        List<T> path2 = this.getPath(data2);
+        Collections.reverse(path2);
+
+        for (T item : path1) {
+            if (path2.contains(item)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the index of the first occurrence of the specified element in this tree or -1 if this list does not
      * contain the element.
      *
