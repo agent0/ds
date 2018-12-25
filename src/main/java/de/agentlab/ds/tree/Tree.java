@@ -1260,7 +1260,6 @@ public class Tree<T> implements Serializable {
         List<T> path1 = this.getPath(data1);
         Collections.reverse(path1);
         List<T> path2 = this.getPath(data2);
-        Collections.reverse(path2);
 
         for (T item : path1) {
             if (path2.contains(item)) {
