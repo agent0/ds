@@ -28,16 +28,20 @@ public class GraphReader {
             String line = r.readLine();
             while (line != null) {
                 String[] content = line.split(" ");
-                if (content[0].equals("graph")) {
-                    g.setName(content[1]);
-                } else if (content[0].equals("node")) {
-                    Node node = new Node(content[1]);
-                    g.add(node);
-                } else if (content[0].equals("edge")) {
-                    Node from = new Node(content[1]);
-                    Node to = new Node(content[2]);
-                    Edge edge = new Edge(from, to);
-                    g.add(edge);
+                switch (content[0]) {
+                    case "graph":
+                        g.setName(content[1]);
+                        break;
+                    case "node":
+                        Node node = new Node(content[1]);
+                        g.add(node);
+                        break;
+                    case "edge":
+                        Node from = new Node(content[1]);
+                        Node to = new Node(content[2]);
+                        Edge edge = new Edge(from, to);
+                        g.add(edge);
+                        break;
                 }
                 line = r.readLine();
             }

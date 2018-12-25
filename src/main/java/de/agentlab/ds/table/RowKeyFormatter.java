@@ -5,6 +5,6 @@ package de.agentlab.ds.table;
  *
  * @param <T> the row data type
  */
-public interface RowKeyFormatter<S> {
-    String format(S rowKey);
+public interface RowKeyFormatter<T> {
+    String format(T rowKey);
 }

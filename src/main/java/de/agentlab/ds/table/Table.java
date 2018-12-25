@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public class Table<S, T, V> {
 
-    private Map<S, Map<T, V>> data = new HashMap<S, Map<T, V>>();
+    private Map<S, Map<T, V>> data = new HashMap<>();
 
     public Table() {
     }
@@ -26,14 +26,14 @@ public class Table<S, T, V> {
     public Table(Table<S, T, V> m) {
         for (Entry<S, Map<T, V>> e : m.data.entrySet()) {
             Map<T, V> v = m.data.get(e.getKey());
-            this.data.put(e.getKey(), new HashMap<T, V>(v));
+            this.data.put(e.getKey(), new HashMap<>(v));
         }
     }
 
     public Table(Map<S, Map<T, V>> data) {
         for (Entry<S, Map<T, V>> e : data.entrySet()) {
             Map<T, V> v = data.get(e.getKey());
-            this.data.put(e.getKey(), new HashMap<T, V>(v));
+            this.data.put(e.getKey(), new HashMap<>(v));
         }
     }
 
@@ -111,7 +111,7 @@ public class Table<S, T, V> {
      * @return the list of elements for the given column key
      */
     public List<V> getCol(T colKey) {
-        List<V> result = new ArrayList<V>();
+        List<V> result = new ArrayList<>();
         for (S rowKey : this.getRowKeys()) {
             result.add(this.get(rowKey, colKey));
         }
@@ -125,6 +125,12 @@ public class Table<S, T, V> {
         return this.data.keySet();
     }
 
+    public List<S> getRowKeys(Comparator<S> comparator) {
+        ArrayList<S> sorted = new ArrayList<>(this.data.keySet());
+        sorted.sort(comparator);
+        return sorted;
+    }
+
     /**
      * @return the set of all column keys
      */
@@ -134,6 +140,12 @@ public class Table<S, T, V> {
             colKeys.addAll(data.get(row).keySet());
         }
         return colKeys;
+    }
+
+    public List<T> getColKeys(Comparator<T> comparator) {
+        ArrayList<T> sorted = new ArrayList<>(this.getColKeys());
+        sorted.sort(comparator);
+        return sorted;
     }
 
     /**
@@ -176,7 +188,7 @@ public class Table<S, T, V> {
     public void put(S rowKey, T colKey, V value) {
         Map<T, V> row = this.data.get(rowKey);
         if (row == null) {
-            row = new HashMap<T, V>();
+            row = new HashMap<>();
             this.data.put(rowKey, row);
         }
         row.put(colKey, value);
@@ -235,13 +247,13 @@ public class Table<S, T, V> {
      * @return the set of {@link KeyPair} elements of the table data.
      */
     public Set<KeyPair<S, T>> getKeyPairs() {
-        Set<KeyPair<S, T>> result = new HashSet<KeyPair<S, T>>();
+        Set<KeyPair<S, T>> result = new HashSet<>();
         Set<S> rowKeys = this.data.keySet();
         for (S rowKey : rowKeys) {
             Map<T, V> rowData = this.data.get(rowKey);
             Set<T> colKeys = rowData.keySet();
             for (T colKey : colKeys) {
-                result.add(new KeyPair<S, T>(rowKey, colKey));
+                result.add(new KeyPair<>(rowKey, colKey));
             }
         }
         return result;
@@ -264,13 +276,13 @@ public class Table<S, T, V> {
      * @return a list of {@link TableEntry} elements of this table
      */
     public List<TableEntry<S, T, V>> getEntries() {
-        List<TableEntry<S, T, V>> result = new ArrayList<TableEntry<S, T, V>>();
+        List<TableEntry<S, T, V>> result = new ArrayList<>();
         Set<S> rowKeys = this.data.keySet();
         for (S rowKey : rowKeys) {
             Map<T, V> rowData = this.data.get(rowKey);
             Set<T> colKeys = rowData.keySet();
             for (T colKey : colKeys) {
-                TableEntry<S, T, V> entry = new TableEntry<S, T, V>(rowKey, colKey, rowData.get(colKey));
+                TableEntry<S, T, V> entry = new TableEntry<>(rowKey, colKey, rowData.get(colKey));
                 result.add(entry);
             }
         }
@@ -308,21 +320,21 @@ public class Table<S, T, V> {
     }
 
     public String toCsv() {
-        return toCsv(r -> r.toString(), c -> c.toString(), v -> v.toString(), Comparator.comparing(Object::toString), Comparator.comparing(Object::toString));
+        return toCsv(Object::toString, Object::toString, Object::toString, Comparator.comparing(Object::toString), Comparator.comparing(Object::toString));
     }
 
-    public String toCsv(RowKeyFormatter rowKeyFormatter, ColKeyFormatter colKeyFormatter, ValueFormatter valueFormatter,
+    public String toCsv(RowKeyFormatter<S> rowKeyFormatter, ColKeyFormatter<T> colKeyFormatter, ValueFormatter<V> valueFormatter,
                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator) {
         String result = ";";
 
         List<S> rowKeys = new ArrayList<>(this.getRowKeys());
         if (rowKeyComparator != null) {
-            Collections.sort(rowKeys, rowKeyComparator);
+            rowKeys.sort(rowKeyComparator);
         }
 
         List<T> colKeys = new ArrayList<>(this.getColKeys());
         if (colKeyComparator != null) {
-            Collections.sort(colKeys, colKeyComparator);
+            colKeys.sort(colKeyComparator);
         }
 
         for (T colKey : colKeys) {

@@ -10,10 +10,10 @@ import java.util.Set;
 public class Graph {
     private String name;
 
-    private List<Graph> subgraphs = new ArrayList<Graph>();
-    private List<Node> nodes = new ArrayList<Node>();
-    private List<String> nodeNames = new ArrayList<String>();
-    private List<Edge> edges = new ArrayList<Edge>();
+    private List<Graph> subgraphs = new ArrayList<>();
+    private List<Node> nodes = new ArrayList<>();
+    private List<String> nodeNames = new ArrayList<>();
+    private List<Edge> edges = new ArrayList<>();
 
     private boolean visible = true;
 
@@ -63,7 +63,7 @@ public class Graph {
     }
 
     public List<Node> findNodesByGroupId(String groupId) {
-        List<Node> result = new ArrayList<Node>();
+        List<Node> result = new ArrayList<>();
         for (Node node : this.nodes) {
             if (node.getGroupId().equals(groupId)) {
                 result.add(node);
@@ -73,7 +73,7 @@ public class Graph {
     }
 
     public List<String> getGroupIdList() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (Node node : this.nodes) {
             if (node.getGroupId() != null) {
                 result.add(node.getGroupId());
@@ -169,7 +169,7 @@ public class Graph {
     }
 
     public String toGraphML() {
-        List<Node> drawn = new ArrayList<Node>();
+        List<Node> drawn = new ArrayList<>();
         return this.toGraphML(false, drawn);
     }
 
@@ -213,7 +213,7 @@ public class Graph {
     }
 
     public String toGexf() {
-        List<Node> drawn = new ArrayList<Node>();
+        List<Node> drawn = new ArrayList<>();
         return this.toGexf(false, drawn);
     }
 
@@ -226,11 +226,11 @@ public class Graph {
             result += "<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n";
             result += "<graph type=\"static\">\n";
 
-            Set<String> tags = new HashSet<String>();
+            Set<String> tags = new HashSet<>();
             for (Node node : this.nodes) {
                 tags.addAll(node.getTags());
             }
-            List<String> sorted = new ArrayList<String>(tags);
+            List<String> sorted = new ArrayList<>(tags);
             Collections.sort(sorted);
 
             if (sorted.size() > 0) {

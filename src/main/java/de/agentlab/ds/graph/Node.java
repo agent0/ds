@@ -21,7 +21,7 @@ public class Node {
     private Shape shape;
     private Geometry geometry;
 
-    private Map<String, String> tags = new HashMap<String, String>();
+    private Map<String, String> tags = new HashMap<>();
 
     public Node(String id) {
         super();
@@ -133,7 +133,7 @@ public class Node {
     }
 
     public List<String> getTags() {
-        ArrayList<String> l = new ArrayList<String>(this.tags.keySet());
+        ArrayList<String> l = new ArrayList<>(this.tags.keySet());
         Collections.sort(l);
         return l;
     }

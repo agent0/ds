@@ -1023,9 +1023,7 @@ public class Tree<T> implements Serializable {
 
         for (T data : matches) {
             List<T> path = this.getPath(data);
-            for (T t : path) {
-                keep.add(t);
-            }
+            keep.addAll(path);
         }
 
         for (T data : matches) {
@@ -1334,7 +1332,7 @@ public class Tree<T> implements Serializable {
     @Override
     public String toString() {
         String result = "";
-        result += this.root.toString(-1, data -> data.toString());
+        result += this.root.toString(-1, Object::toString);
         return result;
     }
 
@@ -1452,7 +1450,8 @@ public class Tree<T> implements Serializable {
     private void _sort(Node<T> parent, final Comparator<? super T> comparator) {
         List<Node<T>> children = parent.getChildren();
 
-        Collections.sort(children, (n1, n2) -> comparator.compare(n1.getData(), n2.getData()));
+        children.sort((n1, n2) -> comparator.compare(n1.getData(), n2.getData()));
+
         for (Node<T> child : children) {
             this._sort(child, comparator);
         }
