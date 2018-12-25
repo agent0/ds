@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * Container class for row/column data
  *
- * @author Jürgen Lind, iteratec GmbH
+ * @author Jürgen Lind
  */
 public class Table<S, T, V> {
 
