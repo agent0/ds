@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -957,6 +958,9 @@ public class Tree<T> implements Serializable {
 
             @Override
             public List<T> next() {
+                if (index.get() >= leafs.size()) {
+                    throw new NoSuchElementException();
+                }
                 List<T> path = Tree.this.getPath(leafs.get(index.get()));
                 index.inc();
                 return path;

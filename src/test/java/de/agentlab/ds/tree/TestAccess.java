@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -204,8 +205,8 @@ public class TestAccess extends BaseTreeTest {
 
         try {
             branchesIterator.next();
-            Assert.fail();
-        } catch (IndexOutOfBoundsException e) {
+            Assert.fail("Expected Exception not thrown");
+        } catch (NoSuchElementException e) {
             // intetionally empty
         }
     }
