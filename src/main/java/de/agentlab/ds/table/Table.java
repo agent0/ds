@@ -137,7 +137,10 @@ public class Table<S, T, V> {
     public Set<T> getColKeys() {
         Set<T> colKeys = new HashSet<>();
         for (S row : getRowKeys()) {
-            colKeys.addAll(data.get(row).keySet());
+            Map<T, V> colMap = data.get(row);
+            if (colMap != null) {
+                colKeys.addAll(colMap.keySet());
+            }
         }
         return colKeys;
     }
