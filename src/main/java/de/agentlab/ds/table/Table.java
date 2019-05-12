@@ -356,15 +356,15 @@ public class Table<S, T, V> {
         Map<T, Integer> maxLengths = new HashMap<>();
 
         if (prettyfy) {
-            rowKeyMaxLength = Math.max(rowKeyMaxLength, this.getRowKeys().stream().mapToInt(rowKey -> rowKey.toString().length()).max().getAsInt());
+            rowKeyMaxLength = Math.max(rowKeyMaxLength, this.getRowKeys().stream().mapToInt(rowKey -> rowKeyFormatter.format(rowKey).length()).max().getAsInt());
 
             for (T colKey : this.getColKeys()) {
                 List<V> col = this.getCol(colKey);
-                int maxLength = colKey.toString().length();
+                int maxLength = colKeyFormatter.format(colKey).length();
                 maxLengths.put(colKey, maxLength);
                 for (V value : col) {
                     if (value != null) {
-                        int length = value.toString().length();
+                        int length = valueFormatter.format(value).length();
                         if (length > maxLength) {
                             maxLength = length;
                         }
