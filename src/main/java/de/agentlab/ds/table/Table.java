@@ -338,21 +338,25 @@ public class Table<S, T, V> {
 
     public String toCsv(RowKeyFormatter<S> rowKeyFormatter, ColKeyFormatter<T> colKeyFormatter, ValueFormatter<V> valueFormatter,
                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator) {
-        return this.format(rowKeyFormatter, colKeyFormatter, valueFormatter, rowKeyComparator, colKeyComparator, ";", null, false);
+        return this.format(rowKeyFormatter, colKeyFormatter, valueFormatter, rowKeyComparator, colKeyComparator, "", ";", null, false);
     }
 
     public String toPrettyTable() {
-        return format(Object::toString, Object::toString, Object::toString, Comparator.comparing(Object::toString), Comparator.comparing(Object::toString), " | ", " + ", true);
+        return toPrettyTable("");
+    }
+
+    public String toPrettyTable(String title) {
+        return format(Object::toString, Object::toString, Object::toString, Comparator.comparing(Object::toString), Comparator.comparing(Object::toString), title, " | ", " + ", true);
     }
 
     public String format(RowKeyFormatter<S> rowKeyFormatter, ColKeyFormatter<T> colKeyFormatter, ValueFormatter<V> valueFormatter,
-                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator, String separator, String separator2, boolean prettyfy) {
+                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator, String title, String separator, String separator2, boolean prettyfy) {
 
-        int rowKeyMaxLength = 0;
+        int rowKeyMaxLength = title.length();
         Map<T, Integer> maxLengths = new HashMap<>();
 
         if (prettyfy) {
-            rowKeyMaxLength = this.getRowKeys().stream().mapToInt(rowKey -> rowKey.toString().length()).max().getAsInt();
+            rowKeyMaxLength = Math.max(rowKeyMaxLength, this.getRowKeys().stream().mapToInt(rowKey -> rowKey.toString().length()).max().getAsInt());
 
             for (T colKey : this.getColKeys()) {
                 List<V> col = this.getCol(colKey);
@@ -385,7 +389,7 @@ public class Table<S, T, V> {
         if (prettyfy) {
             result += this.leftTrim(separator);
         }
-        result += this.rightPad("", rowKeyMaxLength) + separator;
+        result += this.rightPad(title, rowKeyMaxLength) + separator;
 
         for (T colKey : colKeys) {
             result += this.rightPad(colKeyFormatter.format(colKey), this.getMaxLenth(maxLengths, colKey)) + separator;
