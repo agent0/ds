@@ -182,7 +182,7 @@ public class Table<S, T, V> {
     }
 
     /**
-     * Stores a data element at the given position
+     * Stores a data element at the given position.
      *
      * @param rowKey the row key of the position
      * @param colKey the column key of the position
@@ -195,6 +195,16 @@ public class Table<S, T, V> {
             this.data.put(rowKey, row);
         }
         row.put(colKey, value);
+    }
+
+    /**
+     * Stores a null data element at the given position, effectively just adding to row and column key.
+     *
+     * @param rowKey the row key of the position
+     * @param colKey the column key of the position
+     */
+    public void put(S rowKey, T colKey) {
+        this.put(rowKey, colKey, null);
     }
 
     /**
@@ -328,7 +338,37 @@ public class Table<S, T, V> {
 
     public String toCsv(RowKeyFormatter<S> rowKeyFormatter, ColKeyFormatter<T> colKeyFormatter, ValueFormatter<V> valueFormatter,
                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator) {
-        String result = ";";
+        return this.format(rowKeyFormatter, colKeyFormatter, valueFormatter, rowKeyComparator, colKeyComparator, ";", null, false);
+    }
+
+    public String toPrettyTable() {
+        return format(Object::toString, Object::toString, Object::toString, Comparator.comparing(Object::toString), Comparator.comparing(Object::toString), " | ", " + ", true);
+    }
+
+    public String format(RowKeyFormatter<S> rowKeyFormatter, ColKeyFormatter<T> colKeyFormatter, ValueFormatter<V> valueFormatter,
+                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator, String separator, String separator2, boolean prettyfy) {
+
+        int rowKeyMaxLength = 0;
+        Map<T, Integer> maxLengths = new HashMap<>();
+
+        if (prettyfy) {
+            rowKeyMaxLength = this.getRowKeys().stream().mapToInt(rowKey -> rowKey.toString().length()).max().getAsInt();
+
+            for (T colKey : this.getColKeys()) {
+                List<V> col = this.getCol(colKey);
+                int maxLength = colKey.toString().length();
+                maxLengths.put(colKey, maxLength);
+                for (V value : col) {
+                    if (value != null) {
+                        int length = value.toString().length();
+                        if (length > maxLength) {
+                            maxLength = length;
+                        }
+                        maxLengths.put(colKey, maxLength);
+                    }
+                }
+            }
+        }
 
         List<S> rowKeys = new ArrayList<>(this.getRowKeys());
         if (rowKeyComparator != null) {
@@ -340,23 +380,56 @@ public class Table<S, T, V> {
             colKeys.sort(colKeyComparator);
         }
 
+        String result = this.rightPad("", rowKeyMaxLength) + separator;
+
         for (T colKey : colKeys) {
-            result += colKeyFormatter.format(colKey) + ";";
+            result += this.rightPad(colKeyFormatter.format(colKey), this.getMaxLenth(maxLengths, colKey)) + separator;
         }
         result += "\n";
 
+        if (prettyfy && separator2 != null) {
+            result += this.repeat("-", rowKeyMaxLength) + separator2;
+
+            for (T colKey : colKeys) {
+                result += this.repeat("-", this.getMaxLenth(maxLengths, colKey)) + separator2;
+            }
+            result += "\n";
+        }
+
         for (S rowKey : rowKeys) {
-            result += rowKeyFormatter.format(rowKey) + ";";
+            result += this.rightPad(rowKeyFormatter.format(rowKey), rowKeyMaxLength) + separator;
             for (T colKey : colKeys) {
                 if (this.get(rowKey, colKey) != null) {
-                    result += valueFormatter.format(this.get(rowKey, colKey));
+                    result += this.rightPad(valueFormatter.format(this.get(rowKey, colKey)), this.getMaxLenth(maxLengths, colKey));
+                } else {
+                    result += this.rightPad("", this.getMaxLenth(maxLengths, colKey));
                 }
-                result += ";";
+                result += separator;
             }
             result += "\n";
         }
 
         return result;
+    }
+
+    private int getMaxLenth(Map<T, Integer> maxLengths, T colKey) {
+        if (maxLengths.containsKey(colKey)) {
+            return maxLengths.get(colKey);
+        } else {
+            return 0;
+        }
+    }
+
+    private String rightPad(String s, int len) {
+        if (len > 0) {
+            return String.format("%-" + len + "s", s);
+        } else {
+            return s;
+        }
+    }
+
+    private String repeat(String s, int len) {
+        return String.format("%0" + len + "d", 0).replace("0", s);
     }
 
 }
