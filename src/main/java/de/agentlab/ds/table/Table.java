@@ -380,7 +380,12 @@ public class Table<S, T, V> {
             colKeys.sort(colKeyComparator);
         }
 
-        String result = this.rightPad("", rowKeyMaxLength) + separator;
+        String result = "";
+
+        if (prettyfy) {
+            result += this.leftTrim(separator);
+        }
+        result += this.rightPad("", rowKeyMaxLength) + separator;
 
         for (T colKey : colKeys) {
             result += this.rightPad(colKeyFormatter.format(colKey), this.getMaxLenth(maxLengths, colKey)) + separator;
@@ -388,7 +393,7 @@ public class Table<S, T, V> {
         result += "\n";
 
         if (prettyfy && separator2 != null) {
-            result += this.repeat("-", rowKeyMaxLength) + separator2;
+            result += this.leftTrim(separator2) + this.repeat("-", rowKeyMaxLength) + separator2;
 
             for (T colKey : colKeys) {
                 result += this.repeat("-", this.getMaxLenth(maxLengths, colKey)) + separator2;
@@ -397,6 +402,9 @@ public class Table<S, T, V> {
         }
 
         for (S rowKey : rowKeys) {
+            if (prettyfy) {
+                result += this.leftTrim(separator);
+            }
             result += this.rightPad(rowKeyFormatter.format(rowKey), rowKeyMaxLength) + separator;
             for (T colKey : colKeys) {
                 if (this.get(rowKey, colKey) != null) {
@@ -426,6 +434,14 @@ public class Table<S, T, V> {
         } else {
             return s;
         }
+    }
+
+    private String leftTrim(String s) {
+        int i = 0;
+        while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
+            i++;
+        }
+        return s.substring(i);
     }
 
     private String repeat(String s, int len) {
