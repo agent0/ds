@@ -4,6 +4,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 version = '1.0-SNAPSHOT'
 group = 'de.agentlab'
@@ -69,8 +70,52 @@ jar {
     }
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'de.agentlab'
+            artifactId = 'ds'
+            version = '1.0-SNAPSHOT'
+
+            from components.java
+
+            pom {
+                description = 'Common datastructures'
+                licenses {
+                    license {
+                        name = 'The MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'jli'
+                        name = 'Jürgen Lind'
+                        email = 'jli@agentlab.de'
+                    }
+                }
+                scm {
+                    connection = 'https://github.com/agent0/ds.git'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def stagingRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : stagingRepoUrl
+            credentials {
+                username 'agent0'
+                password ''
+            }
+        }
+    }
+}
+
 task copyTestResources(type: Copy) {
     from "${projectDir}/src/test/resources"
     into "${buildDir}/classes/test"
 }
+
 processTestResources.dependsOn copyTestResources
