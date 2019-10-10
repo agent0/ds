@@ -4,10 +4,12 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 apply plugin: 'maven'
-apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
-version = '1.0-SNAPSHOT'
 group = 'de.agentlab'
+archivesBaseName = 'ds'
+version = '1.0'
+//version = '1.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -64,29 +66,55 @@ jar {
     from('.') {
         include 'license.txt'
     }
-    from('src/main/java') {
-        include '**'
-        into 'src'
-    }
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'de.agentlab'
-            artifactId = 'ds'
-            version = '1.0-SNAPSHOT'
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
 
-            from components.java
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
 
-            pom {
-                description = 'Common datastructures'
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'Common Datastructures'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'Some common datastructures'
+
+                scm {
+                    connection = 'https://github.com/agent0/ds.git'
+                }
+
                 licenses {
                     license {
                         name = 'The MIT License'
                         url = 'https://opensource.org/licenses/MIT'
                     }
                 }
+
                 developers {
                     developer {
                         id = 'jli'
@@ -94,20 +122,6 @@ publishing {
                         email = 'jli@agentlab.de'
                     }
                 }
-                scm {
-                    connection = 'https://github.com/agent0/ds.git'
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            def stagingRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : stagingRepoUrl
-            credentials {
-                username 'agent0'
-                password ''
             }
         }
     }
