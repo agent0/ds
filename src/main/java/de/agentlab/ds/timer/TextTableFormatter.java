@@ -32,6 +32,7 @@ public class TextTableFormatter {
 
     public TextTableFormatter() {
         super();
+        this.out = System.out;
     }
 
     public TextTableFormatter(int[] colWidths) {
