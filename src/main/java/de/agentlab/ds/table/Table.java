@@ -328,7 +328,7 @@ public class Table<S, T, V> {
     }
 
     @Override
-    public String toString() {
+        public String toString() {
         return toCsv();
     }
 
@@ -342,11 +342,23 @@ public class Table<S, T, V> {
     }
 
     public String toPrettyTable() {
-        return toPrettyTable("");
+        return toPrettyTable("", false);
     }
 
-    public String toPrettyTable(String title) {
-        return format(Object::toString, Object::toString, Object::toString, Comparator.comparing(Object::toString), Comparator.comparing(Object::toString), title, " | ", " + ", true);
+    public String toPrettyTable(boolean numericRowKeys) {
+        return toPrettyTable("", numericRowKeys);
+    }
+
+    public String toPrettyTable(String title, boolean numericRowKeys) {
+        if (numericRowKeys) {
+            return format(Object::toString, Object::toString, Object::toString, (k1, k2) -> {
+                Long l1 = Long.valueOf(Long.parseLong(k1.toString()));
+                Long l2 = Long.valueOf(Long.parseLong(k2.toString()));
+                return l1.compareTo(l2);
+            }, Comparator.comparing(Object::toString), title, " | ", " + ", true);
+        } else {
+            return format(Object::toString, Object::toString, Object::toString, Comparator.comparing(Object::toString), Comparator.comparing(Object::toString), title, " | ", " + ", true);
+        }
     }
 
     public String format(RowKeyFormatter<S> rowKeyFormatter, ColKeyFormatter<T> colKeyFormatter, ValueFormatter<V> valueFormatter,

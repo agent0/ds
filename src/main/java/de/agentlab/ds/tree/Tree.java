@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * A collection container that arranges the elements in a tree-like structure. Each element can only be added to the
@@ -857,6 +858,15 @@ public class Tree<T> implements Serializable {
     }
 
     /**
+     * Returns an unordered stream of the elements of the tree.
+     *
+     * @return an unordered stream of the elements of the tree
+     */
+    public Stream<T> stream() {
+        return this.nodes.keySet().stream();
+    }
+
+    /**
      * Returns the elements of the tree as pre-ordered list.
      *
      * @return the element list in pre-order
@@ -1275,12 +1285,29 @@ public class Tree<T> implements Serializable {
      * Returns the index of the first occurrence of the specified element in this tree or -1 if this list does not
      * contain the element.
      *
-     * @param data the to look for
+     * @param data the element to look for
      * @return the index of the first occurrence of the specified element in this tree or -1 if this list does not
      * contain the element
      */
     public int indexOf(T data) {
         return this.getPreorderList().indexOf(data);
+    }
+
+    /**
+     * Returns the index of the first occurrence of the specified element within the list of children of its parent
+     * node or -1 if this list does not contain the element.
+     *
+     * @param data the element to look for
+     * @return the index of the first occurrence of the specified element in the list of children of its parent node
+     * or -1 if this list does not contain the element
+     */
+    public int childIndexOf(T data) {
+        Node<T> node = this.nodes.get(data);
+        if (node == null) {
+            throw new IllegalArgumentException("Element '" + data + "' not found.");
+        }
+
+        return node.getParent().getChildren().indexOf(node);
     }
 
     /**
