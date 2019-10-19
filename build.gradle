@@ -8,8 +8,8 @@ apply plugin: 'signing'
 
 group = 'de.agentlab'
 archivesBaseName = 'ds'
-//version = '1.0'
-version = '1.1-SNAPSHOT'
+version = '1.1'
+//version = '1.2-SNAPSHOT'
 
 repositories {
     mavenCentral()
