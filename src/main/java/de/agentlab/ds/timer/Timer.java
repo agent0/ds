@@ -55,8 +55,12 @@ public class Timer {
     }
 
     public static void clear() {
-        data = new ThreadLocal<>();
-        checkpoints = new ThreadLocal<>();
+        if (data.get() != null) {
+            data.get().clear();
+        }
+        if (checkpoints.get() != null) {
+            checkpoints.get().clear();
+        }
     }
 
     private static Checkpoint startInternal(String name) {
