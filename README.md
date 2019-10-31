@@ -55,9 +55,9 @@ TextTableFormatter f = new TextTableFormatter();
 f.print(Timer.getData());
 ```
 
-The following table shows the output of the previous code: the colums are the name of the timer,
-the elapsed total time within the timer (ET), the time spent in the children of the timee (EC) and the time spent in
-the timer itself (ES). So we also have ET = EC + ES.
+The following table shows the output of the previous code: the colums are the name of the timer, the hit count (HC) for the timer,
+the elapsed total time within the timer (ET), the time spent in the children of the timer (EC) and the time spent in
+the timer itself (ES). Thus, we always have ET = EC + ES.
 
 ```
 Name                          | HC   | ET      | EC      | ES      
