@@ -7,7 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @org.testng.annotations.Test
-public class TestTimer {
+public class TestBasics {
     @Test
     public void testBasics() {
         Checkpoint outer = Timer.start("outer");

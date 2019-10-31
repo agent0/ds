@@ -55,15 +55,11 @@ public class Timer {
     }
 
     public static void clear() {
-        if (data.get() != null) {
-            data.get().clear();
-        }
-        if (checkpoints.get() != null) {
-            checkpoints.get().clear();
-        }
+        data.set(null);
+        checkpoints.set(null);
     }
 
-    private static Checkpoint startInternal(String name) {
+    private synchronized static Checkpoint startInternal(String name) {
 
         Stack<Checkpoint> s = checkpoints.get();
 
