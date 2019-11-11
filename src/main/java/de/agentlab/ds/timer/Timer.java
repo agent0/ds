@@ -51,7 +51,11 @@ public class Timer {
     }
 
     public static synchronized List<Checkpoint> getData() {
-        return new ArrayList<>(data.get());
+        if (data.get() != null) {
+            return new ArrayList<>(data.get());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public static void clear() {
