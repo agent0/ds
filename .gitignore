@@ -1,6 +1,9 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea
-gradle
+.gradle
 
 gradle.properties
 secret-keys.gpg
+
+build
+out

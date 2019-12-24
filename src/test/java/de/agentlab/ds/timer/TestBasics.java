@@ -1,10 +1,10 @@
 package de.agentlab.ds.timer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 @org.testng.annotations.Test
 public class TestBasics {
@@ -26,10 +26,11 @@ public class TestBasics {
         CSVFormatter f = new CSVFormatter(new PrintStream(baos));
         f.print(Timer.getData());
 
+        System.out.println(baos.toString());
         Assert.assertEquals(
-                "Depth;Name;HC;ET;EC;ES;\r\n" +
-                        "0;outer;1;0;0;0;\r\n" +
-                        "1;inner_1;1;0;0;0;\r\n" +
-                        "1;inner_2;1;0;0;0;\r\n", baos.toString());
+                "Depth;Name;HC;ET;EC;ES;\n" +
+                        "0;outer;1;0;0;0;\n" +
+                        "1;inner_1;1;0;0;0;\n" +
+                        "1;inner_2;1;0;0;0;\n", baos.toString());
     }
 }
