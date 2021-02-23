@@ -1,10 +1,10 @@
 package de.agentlab.ds.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Test
 public class TestFilter extends BaseTreeTest {
@@ -65,6 +65,21 @@ public class TestFilter extends BaseTreeTest {
         expected.add(i_01);
         expected.add(i_010);
         expected.add(i_011);
+
+        Assert.assertEquals(expected, l);
+    }
+
+    @Test
+    public void testGetPostorderList() {
+        Assert.assertEquals(t.size(), 9);
+
+        List<TestItem> l = t.getPostorderList(data -> data.getValue().startsWith("0"));
+
+        List<TestItem> expected = new ArrayList<>();
+        expected.add(i_010);
+        expected.add(i_011);
+        expected.add(i_01);
+        expected.add(i_0);
 
         Assert.assertEquals(expected, l);
     }

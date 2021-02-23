@@ -4,6 +4,7 @@
 
 gradle.properties
 secret-keys.gpg
+Notes.txt
 
 build
 out

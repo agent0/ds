@@ -917,6 +917,47 @@ public class Tree<T> implements Serializable {
     }
 
     /**
+     * Returns the elements of the tree as post-ordered list.
+     *
+     * @return the element list in post-order
+     */
+    public List<T> getPostorderList() {
+        List<T> result = new ArrayList<>();
+        this._postorder(this.root, result);
+
+        return result.subList(0, result.size()-1);
+    }
+
+    /**
+     * Returns the elements of the tree accepted by the given filter as post-ordered list.
+     *
+     * @param filter the {@link Filter} to use
+     * @return the elements of the tree accepted by the given filter as post-ordered list
+     */
+    public List<T> getPostorderList(Filter<T> filter) {
+        List<T> result = new ArrayList<>();
+        this._postorder(this.root, filter, result, true);
+        return result;
+    }
+
+    /**
+     * Returns the elements of the subtree rooted at the given element as post-ordered list.
+     *
+     * @param data the subtree root
+     * @return the element list in post-order
+     * @throws IllegalArgumentException if the element is not found in the tree
+     */
+    public List<T> getPostorderList(T data) {
+        Node<T> node = this.nodes.get(data);
+        if (node == null) {
+            throw new IllegalArgumentException("Element '" + data + "' not found.");
+        }
+        List<T> result = new ArrayList<>();
+        this._postorder(node, result);
+        return result.subList(0, result.size());
+    }
+
+    /**
      * Returns the elements of the tree accepted by the given filter as set.
      *
      * @param filter the {@link Filter} to use
@@ -1461,6 +1502,24 @@ public class Tree<T> implements Serializable {
             }
             for (Node<T> child : node.getChildren()) {
                 this._preorder(child, filter, result, false);
+            }
+        }
+    }
+
+    private void _postorder(Node<T> node, List<T> result) {
+        for (Node<T> child : node.getChildren()) {
+            this._postorder(child, result);
+        }
+        result.add(node.getData());
+    }
+
+    private void _postorder(Node<T> node, Filter<T> filter, Collection<T> result, boolean isRoot) {
+        if (isRoot || filter.accept(node.getData())) {
+            for (Node<T> child : node.getChildren()) {
+                this._postorder(child, filter, result, false);
+            }
+            if (!isRoot) {
+                result.add(node.getData());
             }
         }
     }
