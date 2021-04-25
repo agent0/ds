@@ -9,7 +9,7 @@ import java.util.List;
 import static de.agentlab.ds.common.ListUtils.chop;
 
 @Test
-public class TestListUtils {
+public class TestListUtils_chop {
 
     @Test
     public void testChop_EmptyList() {
