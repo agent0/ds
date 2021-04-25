@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static de.agentlab.ds.common.ListUtils.chop;
+import static de.agentlab.ds.common.MapUtils.createLookupMap;
 
 /**
  * A collection container that arranges the elements in a tree-like structure. Each element can only be added to the
@@ -75,6 +77,41 @@ public class Tree<T> implements Serializable {
             }
             parent = t;
         }
+        return result;
+    }
+
+    public static <T> Tree<T> asTree(Collection<T> l, Function<T, String> idFn, Function<T, String> parentIdFn) {
+        class local {
+            public void add(Tree<T> result, T t, Map<String, T> lookupMap) {
+                T parent = lookupMap.get(parentIdFn.apply(t));
+
+                if (parent != null) {
+                    if (result.contains(parent)) {
+                        if (!result.contains(t)) {
+                            result.addChild(parent, t);
+                        }
+                    } else {
+                        add(result, parent, lookupMap);
+                        if (!result.contains(t)) {
+                            result.addChild(parent, t);
+                        }
+                    }
+                } else {
+                    if (!result.contains(t)) {
+                        result.add(t);
+                    }
+                }
+            }
+        }
+        local local = new local();
+
+        Tree<T> result = new Tree<>();
+
+        Map<String, T> lookupMap = createLookupMap(l, idFn);
+        for (T t : l) {
+            local.add(result, t, lookupMap);
+        }
+
         return result;
     }
 
