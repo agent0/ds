@@ -1,10 +1,10 @@
 package de.agentlab.ds.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Test
 public class TestFind extends BaseTreeTest {
@@ -89,4 +89,42 @@ public class TestFind extends BaseTreeTest {
         Assert.assertNull(lcs);
     }
 
+    @Test
+    public void testFindByPath_EmptyPath() {
+        Assert.assertEquals(t.size(), 9);
+
+        List<TestItem> path = new ArrayList<>();
+        TestItem byPath = t.findByPath(path);
+
+        Assert.assertNull(byPath);
+    }
+
+    @Test
+    public void testFindByPath() {
+        Assert.assertEquals(t.size(), 9);
+
+        List<TestItem> path = new ArrayList<>();
+        path.add(t.asList().get(0));
+        TestItem byPath = t.findByPath(path);
+
+        Assert.assertEquals(byPath, t.asList().get(0));
+
+        path.add(t.asList().get(1));
+        path.add(t.asList().get(2));
+        byPath = t.findByPath(path);
+
+        Assert.assertEquals(byPath, t.asList().get(2));
+    }
+
+    @Test
+    public void testFindByPathNotFound() {
+        Assert.assertEquals(t.size(), 9);
+
+        List<TestItem> path = new ArrayList<>();
+        path.add(t.asList().get(0));
+        path.add(t.asList().get(2));
+        TestItem byPath = t.findByPath(path);
+
+        Assert.assertNull(byPath);
+    }
 }

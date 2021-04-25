@@ -925,7 +925,7 @@ public class Tree<T> implements Serializable {
         List<T> result = new ArrayList<>();
         this._postorder(this.root, result);
 
-        return result.subList(0, result.size()-1);
+        return result.subList(0, result.size() - 1);
     }
 
     /**
@@ -1231,7 +1231,6 @@ public class Tree<T> implements Serializable {
      * @return a homomorphous tree of type <code>S</code>
      * @throws IllegalArgumentException if the element is not found in the tree
      */
-
     public <S> Tree<S> map(T data, Mapper<T, S> mapper) {
         Node<T> node = this.nodes.get(data);
         if (node == null) {
@@ -1277,6 +1276,30 @@ public class Tree<T> implements Serializable {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the element with the given path.
+     *
+     * @param path the path to search for
+     * @return the element with the given path or <code>null</code> if either no element is found
+     */
+    public T findByPath(List<T> path) {
+        if (path.size() > 0) {
+            T curNode = this.getRoots().stream().filter(r -> r.equals(path.get(0))).findFirst().orElse(null);
+            if (curNode != null) {
+                for (T pathElement : path.subList(1, path.size())) {
+                    curNode = this.getChildren(curNode).stream().filter(r -> r.equals(pathElement)).findFirst().orElse(null);
+                    if (curNode == null) {
+                        return null;
+                    }
+                }
+            }
+
+            return curNode;
+        } else {
+            return null;
+        }
     }
 
     /**
