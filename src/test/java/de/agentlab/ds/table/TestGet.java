@@ -1,11 +1,10 @@
 package de.agentlab.ds.table;
 
 import de.agentlab.AssertUtils;
-
-import java.util.Map;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.Map;
 
 @Test
 public class TestGet extends BaseTableTest {
@@ -71,6 +70,23 @@ public class TestGet extends BaseTableTest {
 
         Assert.assertEquals(t.size(), 3);
         AssertUtils.assertEqualsNoOrder(t.getCol("c1"), asList("v1", "v2"));
+    }
+
+    @Test
+    public void testGetColMap() {
+        Table<String, String, String> t = new Table<>();
+
+        t.put("r", "c1", "v1");
+        t.put("r", "c3", "v3");
+
+        t.put("r2", "c1", "v2");
+
+        Assert.assertEquals(t.size(), 3);
+        Map<String, String> colMap = t.getColMap("c1");
+
+        Assert.assertEquals(colMap.size(), 2);
+        Assert.assertEquals(colMap.get("r2"), "v2");
+        Assert.assertEquals(colMap.get("r"), "v1");
     }
 
     @Test

@@ -119,6 +119,22 @@ public class Table<S, T, V> {
     }
 
     /**
+     * Provides the column data for a given column key as map.
+     *
+     * @param colKey the column key
+     * @return the map of elements for the given column key where each element is mapped by its row key
+     */
+    public Map<S, V> getColMap(T colKey) {
+        Map<S, V> result = new HashMap<>();
+
+        for (S rowKey : this.getRowKeys()) {
+            result.put(rowKey, this.get(rowKey, colKey));
+        }
+
+        return result;
+    }
+
+    /**
      * @return the set of all row keys
      */
     public Set<S> getRowKeys() {
