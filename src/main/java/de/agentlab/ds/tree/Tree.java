@@ -17,6 +17,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static de.agentlab.ds.common.ListUtils.chop;
+
 /**
  * A collection container that arranges the elements in a tree-like structure. Each element can only be added to the
  * tree once (as in a set). The elements that are managed by the container do not have to implement a particular
@@ -1401,6 +1403,23 @@ public class Tree<T> implements Serializable {
             }
         }
         return result;
+    }
+
+    public void merge(Tree<T> other) {
+        for (T treeItem : other.getBreadthFirstList()) {
+            List<T> parentPath = chop(other.getPath(treeItem));
+
+            if (parentPath.size() == 0) {
+                if (!this.getRoots().contains(treeItem)) {
+                    this.add(treeItem);
+                }
+            } else {
+                T targetParent = this.findByPath(parentPath);
+                if (!this.getChildren(targetParent).contains(treeItem)) {
+                    this.addChild(targetParent, treeItem);
+                }
+            }
+        }
     }
 
     /**
