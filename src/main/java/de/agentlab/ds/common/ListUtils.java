@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import static de.agentlab.ds.common.CollectionsUtils.any;
+import static de.agentlab.ds.common.CollectionUtils.any;
 
 public class ListUtils {
 
