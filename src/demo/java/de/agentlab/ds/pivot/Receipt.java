@@ -1,7 +1,10 @@
 package de.agentlab.ds.pivot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Receipt {
 
@@ -49,8 +52,46 @@ public class Receipt {
         this.ammount = ammount;
     }
 
+    public String getMonth() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mma", Locale.US);
+        LocalDateTime parse = LocalDateTime.parse(this.dateAndTime, formatter);
+        System.out.println(parse.getMonth());
+        return String.valueOf(parse.getMonth().getValue());
+    }
+
+    public String getWeekday() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mma", Locale.US);
+        LocalDateTime parse = LocalDateTime.parse(this.dateAndTime, formatter);
+        System.out.println(parse.getMonth());
+        return String.valueOf(parse.getDayOfWeek().getValue());
+    }
+
+    public String getFoodCategory() {
+        if (this.pizza.equals("Margherita")) {
+            return "Veg";
+        }
+        if (this.pizza.equals("Quattro Stagioni") || this.pizza.equals("Salami")) {
+            return "Meat";
+        }
+        if (this.pizza.equals("Tuna")) {
+            return "Fish";
+        }
+        return "?";
+    }
+
+    @Override
+    public String toString() {
+        return "Receipt{" +
+            "employee='" + employee + '\'' +
+            ", dateAndTime='" + dateAndTime + '\'' +
+            ", pizza='" + pizza + '\'' +
+            ", ammount=" + ammount +
+            '}';
+    }
+
     public static List<Receipt> getData() {
         List<Receipt> result = new ArrayList<>();
+        result.add(new Receipt("Melissa", "2019/05/26 01:17PM", "Margherita", 6.03));
         result.add(new Receipt("Melissa", "2019/05/26 01:17PM", "Margherita", 6.03));
         result.add(new Receipt("Sylvia", "2019/05/27 01:19PM", "Quattro Stagioni", 6.74));
         result.add(new Receipt("Juliette", "2019/05/28 02:23PM", "Salami", 6.38));
@@ -67,10 +108,5 @@ public class Receipt {
 
         return result;
     }
-
-    public String getMonth() {
-        return "Mon_" + dateAndTime.substring(dateAndTime.indexOf("/") + 1, dateAndTime.indexOf("/") + 3);
-    }
-
 }
 

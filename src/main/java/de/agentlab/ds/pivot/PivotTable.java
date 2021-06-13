@@ -33,7 +33,7 @@ public class PivotTable<T> {
         return sumTree;
     }
 
-    public void partition(List<T> l, Function<T, String>... pFns) {
+    public void partition(List<T> l, Function<T, String>... categoryFns) {
         class local {
             Map<String, List<T>> partitionOnProperty(List<T> l, Function<T, String> pFn) {
                 Map<String, List<T>> result = new HashMap<>();
@@ -65,7 +65,7 @@ public class PivotTable<T> {
         local local = new local();
 
         this.dataTree = new Tree<>();
-        List<Function<T, String>> pFnList = Arrays.asList(pFns);
+        List<Function<T, String>> pFnList = Arrays.asList(categoryFns);
 
         if (pFnList.size() > 0) {
 
