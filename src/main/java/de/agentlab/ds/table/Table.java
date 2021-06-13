@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import static de.agentlab.ds.common.StringUtils.leftTrim;
+import static de.agentlab.ds.common.StringUtils.repeat;
+import static de.agentlab.ds.common.StringUtils.rightPad;
+
 /**
  * Container class for row/column data
  *
@@ -425,34 +429,34 @@ public class Table<S, T, V> {
         String result = "";
 
         if (prettify) {
-            result += this.leftTrim(separator);
+            result += leftTrim(separator);
         }
-        result += this.rightPad(title, rowKeyMaxLength) + separator;
+        result += rightPad(title, rowKeyMaxLength) + separator;
 
         for (T colKey : colKeys) {
-            result += this.rightPad(colKeyFormatter.format(colKey), this.getMaxLenth(maxLengths, colKey)) + separator;
+            result += rightPad(colKeyFormatter.format(colKey), this.getMaxLenth(maxLengths, colKey)) + separator;
         }
         result += "\n";
 
         if (prettify && separator2 != null) {
-            result += this.leftTrim(separator2) + this.repeat("-", rowKeyMaxLength) + separator2;
+            result += leftTrim(separator2) + repeat("-", rowKeyMaxLength) + separator2;
 
             for (T colKey : colKeys) {
-                result += this.repeat("-", this.getMaxLenth(maxLengths, colKey)) + separator2;
+                result += repeat("-", this.getMaxLenth(maxLengths, colKey)) + separator2;
             }
             result += "\n";
         }
 
         for (S rowKey : rowKeys) {
             if (prettify) {
-                result += this.leftTrim(separator);
+                result += leftTrim(separator);
             }
-            result += this.rightPad(rowKeyFormatter.format(rowKey), rowKeyMaxLength) + separator;
+            result += rightPad(rowKeyFormatter.format(rowKey), rowKeyMaxLength) + separator;
             for (T colKey : colKeys) {
                 if (this.get(rowKey, colKey) != null) {
-                    result += this.rightPad(valueFormatter.format(this.get(rowKey, colKey)), this.getMaxLenth(maxLengths, colKey));
+                    result += rightPad(valueFormatter.format(this.get(rowKey, colKey)), this.getMaxLenth(maxLengths, colKey));
                 } else {
-                    result += this.rightPad("", this.getMaxLenth(maxLengths, colKey));
+                    result += rightPad("", this.getMaxLenth(maxLengths, colKey));
                 }
                 result += separator;
             }
@@ -468,25 +472,5 @@ public class Table<S, T, V> {
         } else {
             return 0;
         }
-    }
-
-    private String rightPad(String s, int len) {
-        if (len > 0) {
-            return String.format("%-" + len + "s", s);
-        } else {
-            return s;
-        }
-    }
-
-    private String leftTrim(String s) {
-        int i = 0;
-        while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
-            i++;
-        }
-        return s.substring(i);
-    }
-
-    private String repeat(String s, int len) {
-        return String.format("%0" + len + "d", 0).replace("0", s);
     }
 }
