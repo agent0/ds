@@ -15,12 +15,17 @@ repositories {
   flatDir(dirs: 'lib')
 }
 
+sourceSets {
+  demo
+}
+
 configurations {
   providedCompile
 }
 
 sourceSets.main.compileClasspath += configurations.providedCompile
 sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.demo.compileClasspath += configurations.providedCompile
 
 compileJava.options.encoding = 'UTF-8'
 javadoc.options.encoding = 'UTF-8'
@@ -67,6 +72,9 @@ dependencies {
   testCompile(
     ['org.testng:testng:6.8.8'],
   )
+
+  demoCompile sourceSets.main.output
+  demoCompile sourceSets.main.compileClasspath
 }
 
 jar {

@@ -344,7 +344,7 @@ public class Table<S, T, V> {
     }
 
     @Override
-        public String toString() {
+    public String toString() {
         return toCsv();
     }
 
@@ -378,12 +378,22 @@ public class Table<S, T, V> {
     }
 
     public String format(RowKeyFormatter<S> rowKeyFormatter, ColKeyFormatter<T> colKeyFormatter, ValueFormatter<V> valueFormatter,
-                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator, String title, String separator, String separator2, boolean prettyfy) {
+                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator) {
+
+        return this.format(rowKeyFormatter, colKeyFormatter, valueFormatter, rowKeyComparator, colKeyComparator, "", " | ", " + ", true);
+    }
+
+    public String format(RowKeyFormatter<S> rowKeyFormatter, ColKeyFormatter<T> colKeyFormatter, ValueFormatter<V> valueFormatter,
+                         Comparator<? super S> rowKeyComparator, Comparator<? super T> colKeyComparator, String title, String separator, String separator2, boolean prettify) {
+
+        if (this.size() == 0) {
+            return "\u25FB";
+        }
 
         int rowKeyMaxLength = title.length();
         Map<T, Integer> maxLengths = new HashMap<>();
 
-        if (prettyfy) {
+        if (prettify) {
             rowKeyMaxLength = Math.max(rowKeyMaxLength, this.getRowKeys().stream().mapToInt(rowKey -> rowKeyFormatter.format(rowKey).length()).max().getAsInt());
 
             for (T colKey : this.getColKeys()) {
@@ -414,7 +424,7 @@ public class Table<S, T, V> {
 
         String result = "";
 
-        if (prettyfy) {
+        if (prettify) {
             result += this.leftTrim(separator);
         }
         result += this.rightPad(title, rowKeyMaxLength) + separator;
@@ -424,7 +434,7 @@ public class Table<S, T, V> {
         }
         result += "\n";
 
-        if (prettyfy && separator2 != null) {
+        if (prettify && separator2 != null) {
             result += this.leftTrim(separator2) + this.repeat("-", rowKeyMaxLength) + separator2;
 
             for (T colKey : colKeys) {
@@ -434,7 +444,7 @@ public class Table<S, T, V> {
         }
 
         for (S rowKey : rowKeys) {
-            if (prettyfy) {
+            if (prettify) {
                 result += this.leftTrim(separator);
             }
             result += this.rightPad(rowKeyFormatter.format(rowKey), rowKeyMaxLength) + separator;
@@ -479,5 +489,4 @@ public class Table<S, T, V> {
     private String repeat(String s, int len) {
         return String.format("%0" + len + "d", 0).replace("0", s);
     }
-
 }
