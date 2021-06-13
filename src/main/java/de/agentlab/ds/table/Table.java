@@ -2,6 +2,7 @@ package de.agentlab.ds.table;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -317,6 +318,18 @@ public class Table<S, T, V> {
             for (T colKey : colKeys) {
                 TableEntry<S, T, V> entry = new TableEntry<>(rowKey, colKey, rowData.get(colKey));
                 result.add(entry);
+            }
+        }
+        return result;
+    }
+
+    public List<S> findRows(List<V> valuePattern) {
+        List<S> result = new ArrayList<>();
+
+        for (S rowKey : this.getRowKeys()) {
+            Collection<V> values = this.getRowMap(rowKey).values();
+            if (values.containsAll(valuePattern)) {
+                result.add(rowKey);
             }
         }
         return result;

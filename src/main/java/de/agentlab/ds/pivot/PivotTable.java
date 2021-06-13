@@ -1,7 +1,10 @@
 package de.agentlab.ds.pivot;
 
 import de.agentlab.ds.common.StringUtils;
+import de.agentlab.ds.table.ColKeyFormatter;
+import de.agentlab.ds.table.RowKeyFormatter;
 import de.agentlab.ds.table.Table;
+import de.agentlab.ds.table.ValueFormatter;
 import de.agentlab.ds.tree.Tree;
 import de.agentlab.ds.tuples.Pair;
 
@@ -33,7 +36,7 @@ public class PivotTable<T> {
         return sumTree;
     }
 
-    public void partition(List<T> l, Function<T, String>... categoryFns) {
+    public void partition(List<T> l, List<Pivot<T>> pivotList) {
         class local {
             Map<String, List<T>> partitionOnProperty(List<T> l, Function<T, String> pFn) {
                 Map<String, List<T>> result = new HashMap<>();
@@ -50,14 +53,14 @@ public class PivotTable<T> {
                 return result;
             }
 
-            void add(PivotDataItem<String, List<T>> entry, Tree<PivotDataItem<String, List<T>>> result, List<Function<T, String>> pFnList) {
-                if (pFnList.size() > 0) {
-                    Map<String, List<T>> partition = this.partitionOnProperty(entry.getRight(), pFnList.get(0));
+            void add(PivotDataItem<String, List<T>> entry, Tree<PivotDataItem<String, List<T>>> result, List<Pivot<T>> pivotList) {
+                if (pivotList.size() > 0) {
+                    Map<String, List<T>> partition = this.partitionOnProperty(entry.getRight(), pivotList.get(0).getCategoryFn());
 
                     for (Map.Entry<String, List<T>> nestedEntry : partition.entrySet()) {
                         PivotDataItem<String, List<T>> data = new PivotDataItem<>(nestedEntry.getKey(), nestedEntry.getValue());
                         result.addChild(entry, data);
-                        add(data, result, pFnList.subList(1, pFnList.size()));
+                        add(data, result, pivotList.subList(1, pivotList.size()));
                     }
                 }
             }
@@ -65,16 +68,17 @@ public class PivotTable<T> {
         local local = new local();
 
         this.dataTree = new Tree<>();
-        List<Function<T, String>> pFnList = Arrays.asList(categoryFns);
 
-        if (pFnList.size() > 0) {
+        pivotList = new ArrayList<>(pivotList);
 
-            Map<String, List<T>> partition = local.partitionOnProperty(l, pFnList.get(0));
+        if (pivotList.size() > 0) {
+
+            Map<String, List<T>> partition = local.partitionOnProperty(l, pivotList.get(0).getCategoryFn());
 
             for (Map.Entry<String, List<T>> entry : partition.entrySet()) {
                 PivotDataItem<String, List<T>> data = new PivotDataItem<>(entry.getKey(), entry.getValue());
                 this.dataTree.add(data);
-                local.add(data, this.dataTree, pFnList.subList(1, pFnList.size()));
+                local.add(data, this.dataTree, pivotList.subList(1, pivotList.size()));
             }
         }
     }
@@ -252,5 +256,50 @@ public class PivotTable<T> {
 
     public String toPrettyTable() {
         return this.table.format(Object::toString, Object::toString, Object::toString, this.getGroupingRowComparator(table), StringUtils::compareWithCollator);
+    }
+
+    public String toPrettyTable(List<Pivot<T>> pivotList) {
+        return this.toPrettyTable(
+            rowKey -> {
+                if (rowKey.matches("\\d+")) {
+                    return "";
+                }
+                if (rowKey.equals("zzz_Sum")) {
+                    return "Sum";
+                }
+                return rowKey;
+            },
+            colKey -> {
+                if (colKey.equals("zzz_Sum")) {
+                    return "Sum";
+                }
+                if (colKey.startsWith("____")) {
+                    return pivotList.get(Integer.parseInt(colKey.substring(4))).getLabel();
+                }
+                Pivot<T> lastPivot = pivotList.get(pivotList.size() - 1);
+
+                String label = lastPivot.getLabelFn().apply(colKey);
+                if (label != null) {
+                    return label;
+                }
+
+                return colKey;
+            },
+            value -> {
+                if (value.equals("zzz_<NaN>")) {
+                    return "";
+                }
+                for (Pivot<T> pivot : pivotList) {
+                    String label = pivot.getLabelFn().apply(value);
+                    if (!label.equals(value)) {
+                        return label;
+                    }
+                }
+                return value;
+            });
+    }
+
+    public String toPrettyTable(RowKeyFormatter<String> rowKeyFormatter, ColKeyFormatter<String> colKeyFormatter, ValueFormatter<String> valueFormatter) {
+        return this.table.format(rowKeyFormatter, colKeyFormatter, valueFormatter, this.getGroupingRowComparator(table), StringUtils::compareWithCollator);
     }
 }

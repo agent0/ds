@@ -52,18 +52,16 @@ public class Receipt {
         this.ammount = ammount;
     }
 
-    public String getMonth() {
+    public int getMonth() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mma", Locale.US);
         LocalDateTime parse = LocalDateTime.parse(this.dateAndTime, formatter);
-        System.out.println(parse.getMonth());
-        return String.valueOf(parse.getMonth().getValue());
+        return parse.getMonth().getValue();
     }
 
-    public String getWeekday() {
+    public int getWeekday() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mma", Locale.US);
         LocalDateTime parse = LocalDateTime.parse(this.dateAndTime, formatter);
-        System.out.println(parse.getMonth());
-        return String.valueOf(parse.getDayOfWeek().getValue());
+        return parse.getDayOfWeek().getValue();
     }
 
     public String getFoodCategory() {
