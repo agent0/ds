@@ -3,7 +3,7 @@ defaultTasks 'local'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'jacoco'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = 'de.agentlab'
