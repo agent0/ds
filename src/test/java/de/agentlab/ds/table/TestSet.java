@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -15,9 +17,9 @@ public class TestSet extends BaseTableTest {
 
     @Test
     public void testSetData() {
-        Map<String, Map<String, String>> m = new HashMap<>();
+        ConcurrentMap<String, ConcurrentMap<String, String>> m = new ConcurrentHashMap<>();
 
-        Map<String, String> row = new HashMap<>();
+        ConcurrentMap<String, String> row = new ConcurrentHashMap<>();
         row.put("c1", "v1");
 
         m.put("r1", row);

@@ -5,6 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 @Test
 public class TestGet extends BaseTableTest {
@@ -99,7 +100,7 @@ public class TestGet extends BaseTableTest {
         t.put("r2", "c1", "v2");
 
         Assert.assertEquals(t.size(), 3);
-        Map<String, Map<String, String>> data = t.getData();
+        ConcurrentMap<String, ConcurrentMap<String, String>> data = t.getData();
 
         Map<String, String> r = data.get("r");
         Assert.assertEquals(r.get("c1"), "v1");

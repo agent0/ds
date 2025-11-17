@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static de.agentlab.ds.common.StringUtils.leftTrim;
 import static de.agentlab.ds.common.StringUtils.repeat;
@@ -23,22 +25,22 @@ import static de.agentlab.ds.common.StringUtils.rightPad;
  */
 public class Table<S, T, V> {
 
-    private Map<S, Map<T, V>> data = new HashMap<>();
+    private  ConcurrentMap<S, ConcurrentMap<T, V>> data = new ConcurrentHashMap<>();
 
     public Table() {
     }
 
     public Table(Table<S, T, V> m) {
-        for (Entry<S, Map<T, V>> e : m.data.entrySet()) {
+        for (Entry<S, ConcurrentMap<T, V>> e : m.data.entrySet()) {
             Map<T, V> v = m.data.get(e.getKey());
-            this.data.put(e.getKey(), new HashMap<>(v));
+            this.data.put(e.getKey(), new ConcurrentHashMap<>(v));
         }
     }
 
     public Table(Map<S, Map<T, V>> data) {
         for (Entry<S, Map<T, V>> e : data.entrySet()) {
             Map<T, V> v = data.get(e.getKey());
-            this.data.put(e.getKey(), new HashMap<>(v));
+            this.data.put(e.getKey(), new ConcurrentHashMap<>(v));
         }
     }
 
@@ -210,22 +212,12 @@ public class Table<S, T, V> {
      * @param value  the data element to store
      */
     public void put(S rowKey, T colKey, V value) {
-        Map<T, V> row = this.data.get(rowKey);
+        ConcurrentMap<T, V> row = this.data.get(rowKey);
         if (row == null) {
-            row = new HashMap<>();
+            row = new ConcurrentHashMap<>();
             this.data.put(rowKey, row);
         }
         row.put(colKey, value);
-    }
-
-    /**
-     * Stores a null data element at the given position, effectively just adding to row and column key.
-     *
-     * @param rowKey the row key of the position
-     * @param colKey the column key of the position
-     */
-    public void put(S rowKey, T colKey) {
-        this.put(rowKey, colKey, null);
     }
 
     /**
@@ -243,7 +235,7 @@ public class Table<S, T, V> {
      *
      * @return nested maps of the table data
      */
-    public Map<S, Map<T, V>> getData() {
+    public ConcurrentMap<S, ConcurrentMap<T, V>> getData() {
         return data;
     }
 
@@ -253,7 +245,7 @@ public class Table<S, T, V> {
      *
      * @param data a map of maps with element data
      */
-    public void setData(Map<S, Map<T, V>> data) {
+    public void setData(ConcurrentMap<S, ConcurrentMap<T, V>> data) {
         this.data = data;
     }
 

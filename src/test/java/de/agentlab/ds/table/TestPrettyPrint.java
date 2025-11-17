@@ -18,8 +18,6 @@ public class TestPrettyPrint {
         t.put("r2", "c2", "v2 v2 v2 v2 v2");
         t.put("r2", "c3", "v3 v3");
 
-        t.put("r3", "c4");
-
-        Assert.assertEquals(t.toPrettyTable().length(), 255);
+        Assert.assertEquals(t.toPrettyTable().length(), 184);
     }
 }
