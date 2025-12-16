@@ -8,7 +8,7 @@
   <artifactId>ds</artifactId>
   <version>1.4-SNAPSHOT</version>
 
-  <name>ds-test</name>
+  <name>ds</name>
 
   <repositories>
     <repository>
@@ -31,12 +31,6 @@
   </properties>
 
   <dependencies>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-collections4</artifactId>
-      <version>4.1</version>
-    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>

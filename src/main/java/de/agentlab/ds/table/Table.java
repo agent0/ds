@@ -1,6 +1,5 @@
 package de.agentlab.ds.table;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -107,7 +106,7 @@ public class Table<S, T, V> {
         if (row == null) {
             return Collections.emptyMap();
         } else {
-            return row;
+            return new HashMap<>(row);
         }
     }
 
@@ -145,7 +144,7 @@ public class Table<S, T, V> {
      * @return the set of all row keys
      */
     public Set<S> getRowKeys() {
-        return this.data.keySet();
+        return new HashSet<>(this.data.keySet());
     }
 
     public List<S> getRowKeys(Comparator<S> comparator) {
@@ -235,8 +234,14 @@ public class Table<S, T, V> {
      *
      * @return nested maps of the table data
      */
-    public ConcurrentMap<S, ConcurrentMap<T, V>> getData() {
-        return data;
+    public Map<S, Map<T, V>> getData() {
+        Map<S, Map<T,V>> result = new HashMap<>();
+
+        for (Entry<S, ConcurrentMap<T, V>> e : data.entrySet()) {
+            Map<T, V> v = data.get(e.getKey());
+            result.put(e.getKey(), new HashMap<>(v));
+        }
+        return result;
     }
 
     /**
@@ -245,8 +250,13 @@ public class Table<S, T, V> {
      *
      * @param data a map of maps with element data
      */
-    public void setData(ConcurrentMap<S, ConcurrentMap<T, V>> data) {
-        this.data = data;
+    public void setData(Map<S, Map<T, V>> data) {
+        for (S rowKey : data.keySet()) {
+            Map<T, V> row = data.get(rowKey);
+            for (T colKey : row.keySet()) {
+                this.put(rowKey, colKey, row.get(colKey));
+            }
+        }
     }
 
     /**
