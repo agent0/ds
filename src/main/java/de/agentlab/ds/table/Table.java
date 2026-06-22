@@ -211,11 +211,7 @@ public class Table<S, T, V> {
      * @param value  the data element to store
      */
     public void put(S rowKey, T colKey, V value) {
-        ConcurrentMap<T, V> row = this.data.get(rowKey);
-        if (row == null) {
-            row = new ConcurrentHashMap<>();
-            this.data.put(rowKey, row);
-        }
+        ConcurrentMap<T, V> row = this.data.computeIfAbsent(rowKey, k -> new ConcurrentHashMap<>());
         row.put(colKey, value);
     }
 
